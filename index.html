@@ -3,39 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Gartic FIX</title>
+<title>Gartic Neon PRO</title>
 
 <style>
 body{
     margin:0;
-    font-family:Arial;
-    background:#111827;
-    color:white;
     overflow:hidden;
+    font-family:Arial;
+    background:#050816;
+    color:white;
 }
 
+/* BACKGROUND */
+#bg{
+    position:fixed;
+    inset:0;
+    z-index:-3;
+}
+
+/* WAVE */
+#wave{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:0%;
+    background:linear-gradient(180deg,#1e90ff,#0033ff);
+    opacity:0.6;
+    transition:1.2s;
+    z-index:5;
+}
+#wave.active{height:100%;}
+
+/* MENU */
 #menu{
     position:absolute;
     inset:0;
     display:flex;
     justify-content:center;
     align-items:center;
+    z-index:10;
 }
 
 .box{
-    background:rgba(0,0,0,0.5);
+    width:320px;
     padding:30px;
-    border-radius:15px;
-    width:300px;
-    text-align:center;
+    border-radius:20px;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(12px);
+    position:relative;
+    overflow:hidden;
 }
 
 input{
     width:100%;
     padding:10px;
     margin-top:10px;
-    border-radius:10px;
     border:none;
+    border-radius:10px;
 }
 
 button{
@@ -44,23 +69,20 @@ button{
     padding:10px;
     border:none;
     border-radius:10px;
-    background:#3b82f6;
+    background:#2563eb;
     color:white;
-    cursor:pointer;
 }
 
-#game{
-    display:none;
-    height:100vh;
-}
+/* GAME */
+#game{display:none;}
 
 #top{
     height:60px;
-    background:#1f2937;
+    background:rgba(0,0,0,0.4);
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:0 10px;
+    padding:10px;
 }
 
 #main{
@@ -70,54 +92,79 @@ button{
 
 #players{
     width:200px;
-    background:#111827;
+    background:rgba(0,0,0,0.3);
     padding:10px;
-    overflow:auto;
-}
-
-#chat{
-    width:250px;
-    background:#111827;
-    padding:10px;
-    overflow:auto;
 }
 
 #center{
     flex:1;
     display:flex;
-    justify-content:center;
-    align-items:center;
     flex-direction:column;
+    align-items:center;
+    justify-content:center;
 }
 
 canvas{
     background:white;
-    border-radius:10px;
+    border-radius:12px;
+    cursor:crosshair;
+}
+
+#chat{
+    width:260px;
+    background:rgba(0,0,0,0.3);
+    padding:10px;
 }
 
 .msg{
-    margin:5px 0;
-    padding:5px;
-    background:#1f2937;
+    margin:5px;
+    padding:6px;
+    background:rgba(255,255,255,0.08);
     border-radius:8px;
+}
+
+/* WORD INPUT */
+#wordBox{
+    display:none;
+    margin-top:10px;
+}
+
+.rainDot{
+    position:absolute;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:radial-gradient(circle,red,orange,yellow,green,blue);
+    animation:up 1.5s linear forwards;
+}
+
+@keyframes up{
+    from{transform:translateY(0);opacity:1;}
+    to{transform:translateY(-200px);opacity:0;}
 }
 </style>
 </head>
 
 <body>
 
+<canvas id="bg"></canvas>
+<div id="wave"></div>
+
+<!-- MENU -->
 <div id="menu">
-    <div class="box">
-        <h2>🎨 Gartic FIX</h2>
+    <div class="box" id="box">
+        <h2>🎨 Gartic Neon</h2>
         <input id="nick" placeholder="Ник">
         <button onclick="join()">Войти</button>
     </div>
 </div>
 
+<!-- GAME -->
 <div id="game">
 
     <div id="top">
-        <div id="role">Загрузка...</div>
+        <div id="role">...</div>
+        <div id="timer">120</div>
         <button onclick="startGame()">Старт</button>
     </div>
 
@@ -126,9 +173,12 @@ canvas{
         <div id="players"></div>
 
         <div id="center">
-            <canvas id="c" width="600" height="400"></canvas>
-            <input id="word" placeholder="Слово (для художника)" style="display:none;">
-            <button onclick="sendWord()" id="sendWordBtn" style="display:none;">OK</button>
+            <canvas id="c" width="650" height="420"></canvas>
+
+            <div id="wordBox">
+                <input id="wordInput" placeholder="Слово">
+                <button onclick="setWord()">OK</button>
+            </div>
         </div>
 
         <div id="chat"></div>
@@ -142,100 +192,180 @@ canvas{
 
 <script>
 
+/* FIREBASE */
 const firebaseConfig = {
-    apiKey: "AIzaSyCCceb4SmnsMryV7LQopTzPAhwV8yrxovU",
-    authDomain: "gartic-game.firebaseapp.com",
-    databaseURL: "https://gartic-game-default-rtdb.firebaseio.com",
-    projectId: "gartic-game",
-    storageBucket: "gartic-game.firebasestorage.app",
-    messagingSenderId: "990895566694",
-    appId: "1:990895566694:web:21b41bb6bcccc8c3e0a2a7"
+apiKey:"AIzaSyCCceb4SmnsMryV7LQopTzPAhwV8yrxovU",
+authDomain:"gartic-game.firebaseapp.com",
+databaseURL:"https://gartic-game-default-rtdb.firebaseio.com",
+projectId:"gartic-game",
+storageBucket:"gartic-game.firebasestorage.app",
+messagingSenderId:"990895566694",
+appId:"1:990895566694:web:21b41bb6bcccc8c3e0a2a7"
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const db=firebase.database();
 
-let myId = null;
-let myName = "";
-let isDrawer = false;
+/* STATE */
+let myId="",myName="";
+let drawer=false;
+let word="";
+let time=120;
+let interval;
 
+/* JOIN EFFECT */
+function rain(){
+    let box=document.getElementById("box");
+    for(let i=0;i<20;i++){
+        let d=document.createElement("div");
+        d.className="rainDot";
+        d.style.left=Math.random()*300+"px";
+        d.style.top="200px";
+        box.appendChild(d);
+        setTimeout(()=>d.remove(),1500);
+    }
+}
+
+/* JOIN */
 function join(){
 
-    const n = document.getElementById("nick").value.trim();
-    if(!n) return alert("введи ник");
+    rain();
 
-    myName = n;
-    myId = db.ref("players").push().key;
+    document.getElementById("wave").classList.add("active");
 
-    db.ref("players/" + myId).set({
-        name: myName,
-        score: 0
-    });
+    setTimeout(()=>{
 
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("game").style.display = "block";
+        myName=document.getElementById("nick").value;
 
-    listen();
+        myId=db.ref("players").push().key;
+
+        db.ref("players/"+myId).set({
+            name:myName,
+            score:0
+        });
+
+        document.getElementById("menu").style.display="none";
+        document.getElementById("game").style.display="block";
+
+        listen();
+
+    },1200);
 }
 
+/* LISTEN */
 function listen(){
 
-    db.ref("players").on("value", snap=>{
-        const p = snap.val() || {};
-        document.getElementById("players").innerHTML =
-            Object.values(p).map(x => `<div>${x.name} (${x.score})</div>`).join("");
+    db.ref("players").on("value",snap=>{
+        let p=snap.val()||{};
+        document.getElementById("players").innerHTML=
+        Object.values(p).map(x=>"👤 "+x.name).join("<br>");
     });
 
-    db.ref("game").on("value", snap=>{
-        const g = snap.val();
-        if(!g) return;
-
-        isDrawer = g.drawer === myId;
-
-        document.getElementById("role").innerText =
-            isDrawer ? "🎨 Ты рисуешь" : "👀 Ты угадываешь";
-
-        if(isDrawer){
-            document.getElementById("word").style.display = "block";
-            document.getElementById("sendWordBtn").style.display = "block";
-        } else {
-            document.getElementById("word").style.display = "none";
-            document.getElementById("sendWordBtn").style.display = "none";
-        }
+    db.ref("chat").on("child_added",snap=>{
+        let m=snap.val();
+        document.getElementById("chat").innerHTML+=
+        `<div class="msg">${m.user}: ${m.text}</div>`;
     });
 
+    db.ref("game").on("value",snap=>{
+        let g=snap.val();
+        if(!g)return;
+
+        drawer=(g.drawer===myId);
+        word=g.word;
+
+        document.getElementById("role").innerText=
+        drawer?"🎨 Рисуешь":"👀 Угадываешь";
+
+        document.getElementById("wordBox").style.display=
+        (drawer && g.status==="setup")?"block":"none";
+    });
 }
 
+/* START */
 function startGame(){
 
-    db.ref("players").once("value", snap=>{
-        const arr = Object.keys(snap.val() || {});
-        if(arr.length === 0) return;
+    db.ref("players").once("value",snap=>{
+        let arr=Object.keys(snap.val()||{});
+        if(arr.length===0)return;
 
-        const drawer = arr[Math.floor(Math.random()*arr.length)];
+        let d=arr[Math.floor(Math.random()*arr.length)];
 
         db.ref("game").set({
-            drawer: drawer,
-            word: "",
-            status: "setup"
+            drawer:d,
+            word:"",
+            status:"setup"
         });
-    });
 
+        startTimer();
+    });
 }
 
-function sendWord(){
+/* WORD */
+function setWord(){
 
-    const w = document.getElementById("word").value.trim().toLowerCase();
-    if(!w) return;
+    let w=document.getElementById("wordInput").value.toLowerCase();
+    if(!w)return;
 
     db.ref("game").update({
-        word: w,
-        status: "play"
+        word:w,
+        status:"play"
     });
+
+    document.getElementById("wordBox").style.display="none";
+}
+
+/* TIMER */
+function startTimer(){
+    clearInterval(interval);
+    time=120;
+
+    interval=setInterval(()=>{
+        time--;
+        document.getElementById("timer").innerText=time;
+
+        if(time<=0){
+            clearInterval(interval);
+            db.ref("chat").push({
+                user:"SYSTEM",
+                text:"⏰ Раунд закончился"
+            });
+        }
+    },1000);
+}
+
+/* CHAT + GUESS */
+function sendMsg(){
+
+    let input=document.getElementById("msg");
+    if(!input)return;
 
 }
 
-</script>
+/* DRAW */
+const c=document.getElementById("c");
+const ctx=c.getContext("2d");
 
-</body>
-</html>
+let draw=false;
+
+c.addEventListener("mousedown",e=>{
+    if(!drawer)return;
+    draw=true;
+});
+
+c.addEventListener("mouseup",()=>draw=false);
+
+c.addEventListener("mousemove",e=>{
+    if(!draw||!drawer)return;
+
+    let r=c.getBoundingClientRect();
+    let x=e.clientX-r.left;
+    let y=e.clientY-r.top;
+
+    ctx.fillRect(x,y,3,3);
+
+    db.ref("draw").push({x,y});
+});
+
+db.ref("draw").on("child_added",snap=>{
+    let d=s
