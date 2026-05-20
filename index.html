@@ -180,19 +180,16 @@
 </head>
 <body>
 
-    <!-- ИГРОВОЙ ЭКРАН ОТКРЫВАЕТСЯ СРАЗУ -->
     <div id="game" style="display: block; width: 100%; max-width: 950px;">
         <div id="status-line" class="drawer-status">Подключение к Firebase...</div>
 
         <div class="game-container">
-            <!-- Список игроков -->
             <div class="panel">
                 <h3 style="color: var(--neon-blue); margin-top: 0;">Игроки</h3>
                 <div id="players-list"></div>
                 <div id="round-number" style="margin-top: 25px; font-weight: bold; color: #8d99ae;">Раунд: 1/3</div>
             </div>
 
-            <!-- Холст для рисования -->
             <div id="canvas-container">
                 <canvas id="paintCanvas" width="500" height="460"></canvas>
                 <div class="tools" id="drawer-tools" style="display: none;">
@@ -202,20 +199,17 @@
                 </div>
             </div>
 
-            <!-- Чат / Зона ввода -->
             <div class="panel" style="display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <h3 id="panel-right-title" style="color: #fbc531; margin-top: 0;">Ответы / Чат</h3>
                     <div id="chat" class="chat-messages"></div>
                 </div>
                 
-                <!-- Меню Загадывания -->
                 <div id="word-setup-zone" style="display: none;">
                     <input type="text" id="secret-word-input" placeholder="Какое слово загадать?">
                     <button class="main-btn" onclick="submitSecretWord()">Загадать слово</button>
                 </div>
 
-                <!-- opacity:1, Меню Ответа -->
                 <div id="guess-zone" style="display: none;">
                     <input type="text" id="guess-input" placeholder="Введите слово..." onkeypress="handleChatKey(event)">
                     <button class="main-btn" onclick="sendGuess()" style="width: 100%; margin-top: 8px;">Отправить</button>
@@ -225,11 +219,10 @@
     </div>
 
     <script>
-        // --- ТВОЙ КОНФИГ FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyCCceb4SmnsMryV7LQopTzPAhwV8yrxovU",
             authDomain: "://firebaseapp.com",
-            databaseURL: "https://firebaseio.com",
+            databaseURL: "https://gartic-game-default-rtdb.firebaseio.com",
             projectId: "gartic-game",
             storageBucket: "gartic-game.firebasestorage.app",
             messagingSenderId: "990895566694",
@@ -250,7 +243,6 @@
         ctx.lineWidth = 4;
         ctx.lineCap = 'round';
 
-        // МГНОВЕННЫЙ АВТОМАТИЧЕСКИЙ ВХОД ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
         myId = '_' + Math.random().toString(36).substr(2, 9);
         
         db.ref('players').once('value', snapshot => {
