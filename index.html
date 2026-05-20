@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gartic Neon PRO</title>
+<title>Gartic FIX CORE</title>
 
 <style>
 body{
@@ -14,11 +14,11 @@ body{
     color:white;
 }
 
-/* BACKGROUND */
+/* BACKGROUND DOTS */
 #bg{
     position:fixed;
     inset:0;
-    z-index:-3;
+    z-index:-2;
 }
 
 /* WAVE */
@@ -28,8 +28,8 @@ body{
     left:0;
     width:100%;
     height:0%;
-    background:linear-gradient(180deg,#1e90ff,#0033ff);
-    opacity:0.6;
+    background:linear-gradient(180deg,#2563eb,#1d4ed8);
+    opacity:0.7;
     transition:1.2s;
     z-index:5;
 }
@@ -46,35 +46,37 @@ body{
 }
 
 .box{
-    width:320px;
-    padding:30px;
-    border-radius:20px;
+    width:300px;
+    padding:25px;
     background:rgba(0,0,0,0.6);
-    backdrop-filter:blur(12px);
-    position:relative;
-    overflow:hidden;
+    border-radius:20px;
+    backdrop-filter:blur(10px);
+    text-align:center;
 }
 
 input{
     width:100%;
     padding:10px;
-    margin-top:10px;
     border:none;
     border-radius:10px;
+    margin-top:10px;
 }
 
 button{
     width:100%;
-    margin-top:10px;
     padding:10px;
+    margin-top:10px;
     border:none;
     border-radius:10px;
-    background:#2563eb;
+    background:#3b82f6;
     color:white;
+    cursor:pointer;
 }
 
 /* GAME */
-#game{display:none;}
+#game{
+    display:none;
+}
 
 #top{
     height:60px;
@@ -82,7 +84,7 @@ button{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:10px;
+    padding:0 10px;
 }
 
 #main{
@@ -99,37 +101,18 @@ button{
 #center{
     flex:1;
     display:flex;
-    flex-direction:column;
-    align-items:center;
     justify-content:center;
+    align-items:center;
+    flex-direction:column;
 }
 
 canvas{
     background:white;
     border-radius:12px;
-    cursor:crosshair;
 }
 
-#chat{
-    width:260px;
-    background:rgba(0,0,0,0.3);
-    padding:10px;
-}
-
-.msg{
-    margin:5px;
-    padding:6px;
-    background:rgba(255,255,255,0.08);
-    border-radius:8px;
-}
-
-/* WORD INPUT */
-#wordBox{
-    display:none;
-    margin-top:10px;
-}
-
-.rainDot{
+/* particles on join */
+.particle{
     position:absolute;
     width:6px;
     height:6px;
@@ -150,39 +133,29 @@ canvas{
 <canvas id="bg"></canvas>
 <div id="wave"></div>
 
-<!-- MENU -->
 <div id="menu">
     <div class="box" id="box">
-        <h2>🎨 Gartic Neon</h2>
+        <h2>🎨 Gartic FIX</h2>
         <input id="nick" placeholder="Ник">
-        <button onclick="join()">Войти</button>
+        <button onclick="join()">Войти в игру</button>
     </div>
 </div>
 
-<!-- GAME -->
 <div id="game">
 
     <div id="top">
         <div id="role">...</div>
-        <div id="timer">120</div>
         <button onclick="startGame()">Старт</button>
     </div>
 
     <div id="main">
-
         <div id="players"></div>
 
         <div id="center">
             <canvas id="c" width="650" height="420"></canvas>
-
-            <div id="wordBox">
-                <input id="wordInput" placeholder="Слово">
-                <button onclick="setWord()">OK</button>
-            </div>
         </div>
 
         <div id="chat"></div>
-
     </div>
 
 </div>
@@ -193,7 +166,7 @@ canvas{
 <script>
 
 /* FIREBASE */
-const firebaseConfig = {
+firebase.initializeApp({
 apiKey:"AIzaSyCCceb4SmnsMryV7LQopTzPAhwV8yrxovU",
 authDomain:"gartic-game.firebaseapp.com",
 databaseURL:"https://gartic-game-default-rtdb.firebaseio.com",
@@ -201,53 +174,114 @@ projectId:"gartic-game",
 storageBucket:"gartic-game.firebasestorage.app",
 messagingSenderId:"990895566694",
 appId:"1:990895566694:web:21b41bb6bcccc8c3e0a2a7"
-};
+});
 
-firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
-/* STATE */
-let myId="",myName="";
-let drawer=false;
-let word="";
-let time=120;
-let interval;
+let myId="";
+let myName="";
 
-/* JOIN EFFECT */
-function rain(){
+/* DOT BACKGROUND (REAL WORKING) */
+const bg=document.getElementById("bg");
+const ctx=bg.getContext("2d");
+
+function resize(){
+    bg.width=window.innerWidth;
+    bg.height=window.innerHeight;
+}
+resize();
+window.onresize=resize;
+
+let dots=[];
+
+for(let i=0;i<70;i++){
+    dots.push({
+        x:Math.random()*window.innerWidth,
+        y:Math.random()*window.innerHeight,
+        vx:(Math.random()-0.5)*1,
+        vy:(Math.random()-0.5)*1
+    });
+}
+
+document.addEventListener("mousemove",e=>{
+    mouse.x=e.clientX;
+    mouse.y=e.clientY;
+});
+
+let mouse={x:0,y:0};
+
+function animate(){
+    ctx.clearRect(0,0,bg.width,bg.height);
+
+    for(let d of dots){
+        d.x+=d.vx;
+        d.y+=d.vy;
+
+        if(d.x<0||d.x>bg.width) d.vx*=-1;
+        if(d.y<0||d.y>bg.height) d.vy*=-1;
+
+        ctx.fillStyle="#60a5fa";
+        ctx.beginPath();
+        ctx.arc(d.x,d.y,2,0,Math.PI*2);
+        ctx.fill();
+
+        let dx=d.x-mouse.x;
+        let dy=d.y-mouse.y;
+        let dist=Math.sqrt(dx*dx+dy*dy);
+
+        if(dist<120){
+            ctx.strokeStyle="rgba(96,165,250,0.3)";
+            ctx.beginPath();
+            ctx.moveTo(d.x,d.y);
+            ctx.lineTo(mouse.x,mouse.y);
+            ctx.stroke();
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+animate();
+
+/* PARTICLES */
+function spawnParticles(){
     let box=document.getElementById("box");
+
     for(let i=0;i<20;i++){
-        let d=document.createElement("div");
-        d.className="rainDot";
-        d.style.left=Math.random()*300+"px";
-        d.style.top="200px";
-        box.appendChild(d);
-        setTimeout(()=>d.remove(),1500);
+        let p=document.createElement("div");
+        p.className="particle";
+        p.style.left=Math.random()*300+"px";
+        p.style.top="200px";
+        box.appendChild(p);
+        setTimeout(()=>p.remove(),1500);
     }
 }
 
-/* JOIN */
+/* JOIN (FIXED) */
 function join(){
 
-    rain();
+    const name=document.getElementById("nick").value.trim();
+    if(!name) return alert("введи ник");
+
+    spawnParticles();
 
     document.getElementById("wave").classList.add("active");
 
     setTimeout(()=>{
 
-        myName=document.getElementById("nick").value;
-
+        myName=name;
         myId=db.ref("players").push().key;
 
         db.ref("players/"+myId).set({
             name:myName,
             score:0
+        }).then(()=>{
+
+            document.getElementById("menu").style.display="none";
+            document.getElementById("game").style.display="block";
+
+            listen();
+
         });
-
-        document.getElementById("menu").style.display="none";
-        document.getElementById("game").style.display="block";
-
-        listen();
 
     },1200);
 }
@@ -264,108 +298,42 @@ function listen(){
     db.ref("chat").on("child_added",snap=>{
         let m=snap.val();
         document.getElementById("chat").innerHTML+=
-        `<div class="msg">${m.user}: ${m.text}</div>`;
+        `<div>${m.user}: ${m.text}</div>`;
     });
 
-    db.ref("game").on("value",snap=>{
-        let g=snap.val();
-        if(!g)return;
-
-        drawer=(g.drawer===myId);
-        word=g.word;
-
-        document.getElementById("role").innerText=
-        drawer?"🎨 Рисуешь":"👀 Угадываешь";
-
-        document.getElementById("wordBox").style.display=
-        (drawer && g.status==="setup")?"block":"none";
-    });
 }
 
 /* START */
 function startGame(){
-
-    db.ref("players").once("value",snap=>{
-        let arr=Object.keys(snap.val()||{});
-        if(arr.length===0)return;
-
-        let d=arr[Math.floor(Math.random()*arr.length)];
-
-        db.ref("game").set({
-            drawer:d,
-            word:"",
-            status:"setup"
-        });
-
-        startTimer();
+    db.ref("chat").push({
+        user:"SYSTEM",
+        text:"🎮 Game started"
     });
-}
-
-/* WORD */
-function setWord(){
-
-    let w=document.getElementById("wordInput").value.toLowerCase();
-    if(!w)return;
-
-    db.ref("game").update({
-        word:w,
-        status:"play"
-    });
-
-    document.getElementById("wordBox").style.display="none";
-}
-
-/* TIMER */
-function startTimer(){
-    clearInterval(interval);
-    time=120;
-
-    interval=setInterval(()=>{
-        time--;
-        document.getElementById("timer").innerText=time;
-
-        if(time<=0){
-            clearInterval(interval);
-            db.ref("chat").push({
-                user:"SYSTEM",
-                text:"⏰ Раунд закончился"
-            });
-        }
-    },1000);
-}
-
-/* CHAT + GUESS */
-function sendMsg(){
-
-    let input=document.getElementById("msg");
-    if(!input)return;
-
 }
 
 /* DRAW */
 const c=document.getElementById("c");
-const ctx=c.getContext("2d");
+const cctx=c.getContext("2d");
 
 let draw=false;
 
 c.addEventListener("mousedown",e=>{
-    if(!drawer)return;
     draw=true;
 });
 
 c.addEventListener("mouseup",()=>draw=false);
 
 c.addEventListener("mousemove",e=>{
-    if(!draw||!drawer)return;
+    if(!draw)return;
 
     let r=c.getBoundingClientRect();
     let x=e.clientX-r.left;
     let y=e.clientY-r.top;
 
-    ctx.fillRect(x,y,3,3);
-
-    db.ref("draw").push({x,y});
+    cctx.fillRect(x,y,3,3);
 });
 
-db.ref("draw").on("child_added",snap=>{
-    let d=s
+</script>
+
+</body>
+</html>
