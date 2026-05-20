@@ -6,111 +6,232 @@
 <title>Mini Gartic</title>
 
 <style>
-body{
+
+*{
     margin:0;
-    font-family:Arial;
-    background:#1e1e1e;
-    color:white;
-    text-align:center;
+    padding:0;
+    box-sizing:border-box;
 }
 
+body{
+    overflow:hidden;
+    font-family:Arial;
+    background:#0f1722;
+    color:white;
+}
+
+/* ФОН */
+
+#animated-bg{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:-1;
+}
+
+.wave{
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:radial-gradient(circle at center,
+    rgba(0,140,255,0.25),
+    rgba(0,0,0,0));
+    animation:waveMove 8s linear infinite;
+}
+
+.wave:nth-child(2){
+    animation-duration:12s;
+    opacity:0.7;
+}
+
+.wave:nth-child(3){
+    animation-duration:16s;
+    opacity:0.4;
+}
+
+@keyframes waveMove{
+    0%{
+        transform:translate(-20%,-20%) rotate(0deg);
+    }
+    100%{
+        transform:translate(-20%,-20%) rotate(360deg);
+    }
+}
+
+/* MENU */
+
 #menu{
-    margin-top:100px;
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.menu-box{
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(10px);
+    padding:40px;
+    border-radius:20px;
+    width:320px;
+    box-shadow:0 0 30px rgba(0,140,255,0.4);
+}
+
+.menu-box h1{
+    text-align:center;
+    margin-bottom:20px;
 }
 
 input{
-    padding:10px;
+    width:100%;
+    padding:12px;
     border:none;
-    border-radius:10px;
-    width:220px;
+    border-radius:12px;
+    margin-top:10px;
+    font-size:16px;
 }
 
 button{
-    padding:10px 20px;
+    width:100%;
+    padding:12px;
+    margin-top:12px;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
+    background:#008cff;
+    color:white;
+    font-size:17px;
     cursor:pointer;
-    margin:5px;
-    font-size:16px;
+}
+
+button:hover{
+    opacity:0.9;
 }
 
 #game{
     display:none;
+    height:100vh;
 }
 
 #topbar{
-    background:#2c2c2c;
-    padding:10px;
+    height:70px;
+    background:rgba(0,0,0,0.5);
+    backdrop-filter:blur(10px);
     display:flex;
-    justify-content:space-between;
     align-items:center;
-}
-
-#players{
-    width:200px;
-    background:#2a2a2a;
-    height:500px;
-    overflow:auto;
+    justify-content:space-between;
     padding:10px;
 }
 
-#chat{
-    width:250px;
-    background:#2a2a2a;
-    height:500px;
-    overflow:auto;
-    padding:10px;
-}
-
-#canvas-container{
-    flex:1;
+#role-info{
+    font-size:20px;
+    font-weight:bold;
 }
 
 #game-area{
     display:flex;
-    gap:10px;
+    height:calc(100vh - 70px);
+}
+
+#players{
+    width:220px;
+    background:rgba(0,0,0,0.35);
+    overflow:auto;
     padding:10px;
+}
+
+#players-list div{
+    margin-top:10px;
+    background:rgba(255,255,255,0.05);
+    padding:10px;
+    border-radius:10px;
+}
+
+#canvas-container{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
 }
 
 canvas{
     background:white;
-    border-radius:10px;
-    cursor:crosshair;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+#chat-container{
+    width:300px;
+    background:rgba(0,0,0,0.35);
+    display:flex;
+    flex-direction:column;
+    padding:10px;
+}
+
+#chat{
+    flex:1;
+    overflow:auto;
 }
 
 .chat-msg{
-    margin:5px;
-    padding:5px;
-    border-radius:5px;
-    background:#3a3a3a;
+    background:rgba(255,255,255,0.08);
+    margin-top:10px;
+    padding:10px;
+    border-radius:10px;
 }
 
 .system-msg{
-    background:#4444aa;
+    background:#214b9b;
 }
 
 .correct-msg{
-    background:#22aa22;
+    background:#1f8a3c;
+}
+
+#drawer-panel{
+    margin-top:15px;
+    width:400px;
 }
 
 .active-tool{
     background:orange;
 }
+
+#word-display{
+    font-size:22px;
+    margin-top:10px;
+    font-weight:bold;
+}
+
 </style>
 </head>
 
 <body>
 
+<div id="animated-bg">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+</div>
+
 <div id="menu">
-    <h1>🎨 Mini Gartic</h1>
 
-    <input type="text" id="nickname" placeholder="Введите ник">
+    <div class="menu-box">
 
-    <br><br>
+        <h1>🎨 Mini Gartic</h1>
 
-    <button onclick="joinGame()">
-        Войти в игру
-    </button>
+        <input
+            type="text"
+            id="nickname"
+            placeholder="Введите ник"
+        >
+
+        <button onclick="joinGame()">
+            Войти в игру
+        </button>
+
+    </div>
+
 </div>
 
 <div id="game">
@@ -118,11 +239,15 @@ canvas{
     <div id="topbar">
 
         <div>
-            <button id="tool-pencil" onclick="setTool('pencil')" class="active-tool">
+
+            <button id="tool-pencil"
+            onclick="setTool('pencil')"
+            class="active-tool">
                 ✏ Карандаш
             </button>
 
-            <button id="tool-spray" onclick="setTool('spray')">
+            <button id="tool-spray"
+            onclick="setTool('spray')">
                 💨 Спрей
             </button>
 
@@ -133,6 +258,7 @@ canvas{
             <button onclick="forceStartRound()">
                 ▶ Старт
             </button>
+
         </div>
 
         <div id="role-info">
@@ -144,29 +270,43 @@ canvas{
     <div id="game-area">
 
         <div id="players">
-            <h3>Игроки</h3>
+
+            <h2>Игроки</h2>
 
             <div id="players-list"></div>
+
         </div>
 
         <div id="canvas-container">
 
-            <canvas id="canvas" width="800" height="500"></canvas>
+            <canvas
+                id="canvas"
+                width="800"
+                height="500">
+            </canvas>
 
-            <br><br>
+            <div id="word-display"></div>
 
-            <div id="drawer-panel" style="display:none;">
-                <input type="text" id="secret-word-input" placeholder="Введите слово">
-                <button onclick="submitSecretWord()">Подтвердить</button>
+            <div id="drawer-panel"
+            style="display:none;">
+
+                <input
+                    type="text"
+                    id="secret-word-input"
+                    placeholder="Введите слово"
+                >
+
+                <button onclick="submitSecretWord()">
+                    Начать рисовать
+                </button>
+
             </div>
 
         </div>
 
-        <div>
+        <div id="chat-container">
 
             <div id="chat"></div>
-
-            <br>
 
             <input
                 type="text"
@@ -185,13 +325,13 @@ canvas{
 
 </div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
 
 const firebaseConfig = {
+
     apiKey: "AIzaSyCCceb4SmnsMryV7LQopTzPAhwV8yrxovU",
     authDomain: "gartic-game.firebaseapp.com",
     databaseURL: "https://gartic-game-default-rtdb.firebaseio.com",
@@ -199,6 +339,7 @@ const firebaseConfig = {
     storageBucket: "gartic-game.firebasestorage.app",
     messagingSenderId: "990895566694",
     appId: "1:990895566694:web:21b41bb6bcccc8c3e0a2a7"
+
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -218,9 +359,13 @@ let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
 
+/* JOIN */
+
 function joinGame(){
-    const input = document.getElementById('nickname');
-    const name = input.value.trim();
+
+    const name =
+    document.getElementById('nickname')
+    .value.trim();
 
     if(!name){
         alert('Введите ник');
@@ -228,117 +373,49 @@ function joinGame(){
     }
 
     myName = name;
+
     myId = db.ref().push().key;
 
     db.ref('players/' + myId).set({
-        id: myId,
-        name: myName,
-        score: 0
+        id:myId,
+        name:myName,
+        score:0
     });
 
-    document.getElementById('menu').style.display = 'none';
-    document.getElementById('game').style.display = 'block';
+    document.getElementById('menu')
+    .style.display = 'none';
 
-    setupFirebaseListeners();
+    document.getElementById('game')
+    .style.display = 'block';
+
+    setupListeners();
 }
 
-function setupFirebaseListeners(){
-    db.ref('players').on('value', snapshot => {
-        const players = snapshot.val() || {};
+/* FIREBASE */
+
+function setupListeners(){
+
+    db.ref('players').on('value', snap => {
+
+        const players = snap.val() || {};
+
         updatePlayers(players);
+
     });
 
-    db.ref('chat').on('child_added', snapshot => {
-        const msg = snapshot.val();
-        addChatMessage(msg);
+    db.ref('chat').on('child_added', snap => {
+
+        addChatMessage(snap.val());
+
     });
 
-    db.ref('canvas/lines').on('child_added', snapshot => {
-        const data = snapshot.val();
-        drawFromFirebase(
-            data.x,
-            data.y,
-            data.type,
-            data.isNew
-        );
-    });
+    db.ref('canvas/lines')
+    .on('child_added', snap => {
 
-    db.ref('canvas').on('value', snapshot => {
-        if(!snapshot.exists()){
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-        }
-    });
+        const d = snap.val();
 
-    db.ref('gameState').on('value', snapshot => {
-        const state = snapshot.val();
-        if(!state) return;
-
-        if(state.drawerId === myId){
-            currentRole = 'drawer';
-            document.getElementById('role-info').innerText = 'Роль: художник';
-
-            if(state.status === 'setup'){
-                document.getElementById('drawer-panel').style.display = 'block';
-            }else{
-                document.getElementById('drawer-panel').style.display = 'none';
-            }
-        }else{
-            currentRole = 'viewer';
-            document.getElementById('role-info').innerText = 'Роль: угадывающий';
-            document.getElementById('drawer-panel').style.display = 'none';
-        }
-    });
-}
-
-function updatePlayers(players){
-    const list = document.getElementById('players-list');
-    list.innerHTML = '';
-
-    Object.values(players).forEach(player => {
-        list.innerHTML += `
-            <div>
-                👤 ${player.name} — ${player.score}
-            </div>
-        `;
-    });
-}
-
-function addChatMessage(msg){
-    const chat = document.getElementById('chat');
-    let className = 'chat-msg';
-
-    if(msg.type === 'system')
-        className = 'system-msg';
-
-    if(msg.type === 'correct')
-        className = 'correct-msg';
-
-    chat.innerHTML += `
-        <div class="${className}">
-            <b>${msg.user}:</b> ${msg.text}
-        </div>
-    `;
-
-    chat.scrollTop = chat.scrollHeight;
-}
-
-function forceStartRound(){
-    db.ref('players').once('value', snapshot => {
-        const arr = Object.values(snapshot.val() || {});
-        if(arr.length > 0){
-            setupNewTurn(1, arr);
-        }
-    });
-}
-
-function setupNewTurn(roundNum, playersArray){
-    if(roundNum > 3){
-        showFinalResults();
-        return;
-    }
-    // Логика переключения раундов
-}
-</script>
-
-</body>
-</html>
+        drawLine(
+            d.x,
+            d.y,
+            d.type,
+            d.isNew
