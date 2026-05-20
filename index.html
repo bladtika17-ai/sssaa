@@ -3,37 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gartic FIX CORE</title>
+<title>Neon Gartic Room</title>
 
 <style>
 body{
     margin:0;
     overflow:hidden;
     font-family:Arial;
-    background:#050816;
+    background:#020617;
     color:white;
 }
 
-/* BACKGROUND DOTS */
+/* BACKGROUND PARTICLES */
 #bg{
     position:fixed;
     inset:0;
-    z-index:-2;
+    z-index:-3;
 }
 
-/* WAVE */
-#wave{
+/* GLASS TRANSITION */
+#glass{
     position:fixed;
-    bottom:0;
-    left:0;
-    width:100%;
-    height:0%;
-    background:linear-gradient(180deg,#2563eb,#1d4ed8);
-    opacity:0.7;
+    inset:0;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    opacity:0;
+    pointer-events:none;
     transition:1.2s;
-    z-index:5;
 }
-#wave.active{height:100%;}
+#glass.active{
+    opacity:1;
+}
 
 /* MENU */
 #menu{
@@ -42,14 +42,13 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    z-index:10;
 }
 
 .box{
-    width:300px;
+    width:320px;
     padding:25px;
-    background:rgba(0,0,0,0.6);
     border-radius:20px;
+    background:rgba(0,0,0,0.6);
     backdrop-filter:blur(10px);
     text-align:center;
 }
@@ -57,34 +56,32 @@ body{
 input{
     width:100%;
     padding:10px;
-    border:none;
-    border-radius:10px;
     margin-top:10px;
+    border-radius:10px;
+    border:none;
 }
 
 button{
     width:100%;
-    padding:10px;
     margin-top:10px;
-    border:none;
+    padding:10px;
     border-radius:10px;
-    background:#3b82f6;
+    border:none;
+    background:#2563eb;
     color:white;
     cursor:pointer;
 }
 
 /* GAME */
-#game{
-    display:none;
-}
+#game{display:none;}
 
 #top{
     height:60px;
-    background:rgba(0,0,0,0.4);
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:0 10px;
+    padding:10px;
+    background:rgba(0,0,0,0.4);
 }
 
 #main{
@@ -109,21 +106,28 @@ button{
 canvas{
     background:white;
     border-radius:12px;
+    cursor:crosshair;
 }
 
-/* particles on join */
-.particle{
+#chat{
+    width:260px;
+    background:rgba(0,0,0,0.3);
+    padding:10px;
+}
+
+/* PARTICLES */
+.dot{
     position:absolute;
     width:6px;
     height:6px;
     border-radius:50%;
-    background:radial-gradient(circle,red,orange,yellow,green,blue);
-    animation:up 1.5s linear forwards;
+    background:radial-gradient(circle,red,orange,yellow,green,blue,purple);
+    animation:float 2s linear infinite;
 }
 
-@keyframes up{
+@keyframes float{
     from{transform:translateY(0);opacity:1;}
-    to{transform:translateY(-200px);opacity:0;}
+    to{transform:translateY(-250px);opacity:0;}
 }
 </style>
 </head>
@@ -131,24 +135,27 @@ canvas{
 <body>
 
 <canvas id="bg"></canvas>
-<div id="wave"></div>
+<div id="glass"></div>
 
+<!-- MENU -->
 <div id="menu">
     <div class="box" id="box">
-        <h2>🎨 Gartic FIX</h2>
+        <h2>🌈 Neon Gartic</h2>
         <input id="nick" placeholder="Ник">
-        <button onclick="join()">Войти в игру</button>
+        <button onclick="join()">Войти</button>
     </div>
 </div>
 
+<!-- GAME -->
 <div id="game">
 
     <div id="top">
         <div id="role">...</div>
-        <button onclick="startGame()">Старт</button>
+        <button onclick="startGame()">СТАРТ (любой)</button>
     </div>
 
     <div id="main">
+
         <div id="players"></div>
 
         <div id="center">
@@ -156,6 +163,7 @@ canvas{
         </div>
 
         <div id="chat"></div>
+
     </div>
 
 </div>
@@ -178,49 +186,50 @@ appId:"1:990895566694:web:21b41bb6bcccc8c3e0a2a7"
 
 const db=firebase.database();
 
+/* ROOM SYSTEM (NEW PLAYERS ONLY) */
+const roomId = "room_" + Math.random().toString(36).substr(2,6);
+
+/* STATE */
 let myId="";
 let myName="";
 
-/* DOT BACKGROUND (REAL WORKING) */
+/* BACKGROUND PARTICLES (RAINBOW) */
 const bg=document.getElementById("bg");
 const ctx=bg.getContext("2d");
 
-function resize(){
-    bg.width=window.innerWidth;
-    bg.height=window.innerHeight;
-}
-resize();
-window.onresize=resize;
+bg.width=innerWidth;
+bg.height=innerHeight;
 
 let dots=[];
 
-for(let i=0;i<70;i++){
+for(let i=0;i<120;i++){
     dots.push({
-        x:Math.random()*window.innerWidth,
-        y:Math.random()*window.innerHeight,
-        vx:(Math.random()-0.5)*1,
-        vy:(Math.random()-0.5)*1
+        x:Math.random()*bg.width,
+        y:Math.random()*bg.height,
+        vx:(Math.random()-0.5)*1.2,
+        vy:(Math.random()-0.5)*1.2
     });
 }
+
+let mouse={x:0,y:0};
 
 document.addEventListener("mousemove",e=>{
     mouse.x=e.clientX;
     mouse.y=e.clientY;
 });
 
-let mouse={x:0,y:0};
-
 function animate(){
     ctx.clearRect(0,0,bg.width,bg.height);
 
     for(let d of dots){
+
         d.x+=d.vx;
         d.y+=d.vy;
 
         if(d.x<0||d.x>bg.width) d.vx*=-1;
         if(d.y<0||d.y>bg.height) d.vy*=-1;
 
-        ctx.fillStyle="#60a5fa";
+        ctx.fillStyle="hsl("+(d.x%360)+",100%,60%)";
         ctx.beginPath();
         ctx.arc(d.x,d.y,2,0,Math.PI*2);
         ctx.fill();
@@ -229,8 +238,8 @@ function animate(){
         let dy=d.y-mouse.y;
         let dist=Math.sqrt(dx*dx+dy*dy);
 
-        if(dist<120){
-            ctx.strokeStyle="rgba(96,165,250,0.3)";
+        if(dist<130){
+            ctx.strokeStyle="rgba(255,255,255,0.15)";
             ctx.beginPath();
             ctx.moveTo(d.x,d.y);
             ctx.lineTo(mouse.x,mouse.y);
@@ -242,46 +251,42 @@ function animate(){
 }
 animate();
 
-/* PARTICLES */
-function spawnParticles(){
+/* JOIN PARTICLES */
+function spawnRainbow(){
     let box=document.getElementById("box");
 
-    for(let i=0;i<20;i++){
-        let p=document.createElement("div");
-        p.className="particle";
-        p.style.left=Math.random()*300+"px";
-        p.style.top="200px";
-        box.appendChild(p);
-        setTimeout(()=>p.remove(),1500);
+    for(let i=0;i<25;i++){
+        let d=document.createElement("div");
+        d.className="dot";
+        d.style.left=Math.random()*300+"px";
+        d.style.top="200px";
+        box.appendChild(d);
+        setTimeout(()=>d.remove(),2000);
     }
 }
 
-/* JOIN (FIXED) */
+/* JOIN */
 function join(){
 
-    const name=document.getElementById("nick").value.trim();
-    if(!name) return alert("введи ник");
+    spawnRainbow();
 
-    spawnParticles();
-
-    document.getElementById("wave").classList.add("active");
+    document.getElementById("glass").classList.add("active");
 
     setTimeout(()=>{
 
-        myName=name;
-        myId=db.ref("players").push().key;
+        myName=document.getElementById("nick").value;
 
-        db.ref("players/"+myId).set({
+        myId=db.ref("rooms/"+roomId+"/players").push().key;
+
+        db.ref("rooms/"+roomId+"/players/"+myId).set({
             name:myName,
             score:0
-        }).then(()=>{
-
-            document.getElementById("menu").style.display="none";
-            document.getElementById("game").style.display="block";
-
-            listen();
-
         });
+
+        document.getElementById("menu").style.display="none";
+        document.getElementById("game").style.display="block";
+
+        listen();
 
     },1200);
 }
@@ -289,13 +294,13 @@ function join(){
 /* LISTEN */
 function listen(){
 
-    db.ref("players").on("value",snap=>{
+    db.ref("rooms/"+roomId+"/players").on("value",snap=>{
         let p=snap.val()||{};
         document.getElementById("players").innerHTML=
         Object.values(p).map(x=>"👤 "+x.name).join("<br>");
     });
 
-    db.ref("chat").on("child_added",snap=>{
+    db.ref("rooms/"+roomId+"/chat").on("child_added",snap=>{
         let m=snap.val();
         document.getElementById("chat").innerHTML+=
         `<div>${m.user}: ${m.text}</div>`;
@@ -303,12 +308,19 @@ function listen(){
 
 }
 
-/* START */
+/* START GAME (ANYONE CAN START) */
 function startGame(){
-    db.ref("chat").push({
-        user:"SYSTEM",
-        text:"🎮 Game started"
+
+    db.ref("rooms/"+roomId).set({
+        started:true,
+        word:""
     });
+
+    db.ref("rooms/"+roomId+"/chat").push({
+        user:"SYSTEM",
+        text:"🎮 Новая игра началась"
+    });
+
 }
 
 /* DRAW */
@@ -317,19 +329,18 @@ const cctx=c.getContext("2d");
 
 let draw=false;
 
-c.addEventListener("mousedown",e=>{
-    draw=true;
-});
-
+c.addEventListener("mousedown",()=>draw=true);
 c.addEventListener("mouseup",()=>draw=false);
 
 c.addEventListener("mousemove",e=>{
     if(!draw)return;
 
     let r=c.getBoundingClientRect();
+
     let x=e.clientX-r.left;
     let y=e.clientY-r.top;
 
+    cctx.fillStyle="black";
     cctx.fillRect(x,y,3,3);
 });
 
