@@ -176,13 +176,13 @@
 </head>
 <body>
 
-    <!-- КЛАССИЧЕСКИЙ ЭКРАН ВХОДА (РЕГИСТРАЦИЯ) -->
+    <!-- ЭКРАН ВХОДА -->
     <div id="lobby" class="active">
         <h1 style="text-align: center; color: var(--text-color); font-size: 36px; text-shadow: 0 0 15px rgba(255,0,85,0.3);">Gartic Ultra Edition</h1>
         <div class="panel" style="max-width: 400px; margin: 0 auto; text-align: center;">
-            <p style="color: #8d99ae;">Введите ваш никнейм для входа в игру:</p>
+            <p style="color: #8d99ae;">добрий день бляха введи ник :</p>
             <input type="text" id="username" placeholder="Ваш ник..." maxlength="15">
-            <button class="main-btn" onclick="joinGame()" style="width: 100%; margin-top: 15px;">Войти в игру</button>
+            <button class="main-btn" onclick="joinGame()" style="width: 100%; margin-top: 15px;">Войти в говно </button>
         </div>
     </div>
 
@@ -209,7 +209,7 @@
                 </div>
             </div>
 
-            <!-- Чат / Зона ввода -->
+            <!-- Чат -->
             <div class="panel" style="display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <h3 id="panel-right-title" style="color: #fbc531; margin-top: 0;">Ответы / Чат</h3>
@@ -257,7 +257,6 @@
         ctx.lineWidth = 4;
         ctx.lineCap = 'round';
 
-        // КНОПКА ВОЙТИ: МГНОВЕННО ПУСКАЕТ В ИГРУ ПО КЛИКУ
         function joinGame() {
             const inputField = document.getElementById('username');
             const enteredName = inputField.value.trim();
@@ -266,26 +265,22 @@
             myName = enteredName;
             myId = '_' + Math.random().toString(36).substr(2, 9);
 
-            // Записываем игрока в Firebase
             db.ref('players/' + myId).set({
                 name: myName,
                 score: 0,
                 id: myId
             });
 
-            // Автоматическое удаление при закрытии страницы
             db.ref('players/' + myId).onDisconnect().remove();
 
-            // Переключаем экраны
             document.getElementById('lobby').classList.remove('active');
             document.getElementById('game').classList.add('active');
 
-            // Запуск синхронизации
             initGameSync();
         }
 
         function initGameSync() {
-            // Синхронизация списка игроков
+            // Исправленная проверка игроков
             db.ref('players').on('value', snapshot => {
                 const playersObj = snapshot.val() || {};
                 const listDiv = document.getElementById('players-list');
@@ -296,10 +291,10 @@
                     listDiv.innerHTML += `<div class="player-item"><span>👤 <b>${p.name}</b></span> <span style="color:#00ff88">${p.score} б.</span></div>`;
                 });
 
-                // Если в базе пусто по статусу, показываем первому игроку кнопку ручного старта раунда
                 db.ref('gameState/status').once('value', statusSnap => {
                     const startBtn = document.getElementById('start-round-btn');
                     if (!statusSnap.val() || statusSnap.val() === 'waiting') {
+                        // ПРОВЕРКА ИСПРАВЛЕНА: ищем первый элемент массива корректно
                         if (playersArray.length > 0 && playersArray[0].id === myId) {
                             startBtn.style.display = 'block';
                         } else {
@@ -311,7 +306,6 @@
                 });
             });
 
-            // Синхронизация состояния игры
             db.ref('gameState').on('value', snapshot => {
                 const state = snapshot.val();
                 if (!state) {
@@ -351,7 +345,6 @@
                 }
             });
 
-            // Синхронизация холста
             db.ref('canvas/lines').on('value', snapshot => {
                 const data = snapshot.val();
                 if (!data) {
@@ -363,7 +356,6 @@
                 }
             });
 
-            // Чат
             db.ref('chat').on('child_added', snapshot => {
                 const msg = snapshot.val();
                 const chatDiv = document.getElementById('chat');
@@ -376,7 +368,6 @@
             });
         }
 
-        // Функция принудительного старта кнопкой
         function forceStartRound() {
             db.ref('players').once('value', snapshot => {
                 const arr = Object.values(snapshot.val() || {});
@@ -510,7 +501,7 @@
                 let text = '🏆 ИТОГИ ИГРЫ:\n';
                 players.forEach((p, i) => { text += `${i + 1}. ${p.name} — ${p.score} очков\n`; });
                 alert(text);
-                db.ref('gameState').remove(); // Сброс состояния для новой игры
+                db.ref('gameState').remove();
             });
         }
     </script>
