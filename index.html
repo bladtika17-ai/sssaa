@@ -3,62 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Gartic</title>
+<title>Mini Gartic FIX</title>
 
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
-    overflow:hidden;
+    margin:0;
     font-family:Arial;
-    background:#0f1722;
+    background:#111827;
     color:white;
-}
-
-/* ФОН */
-
-#animated-bg{
-    position:fixed;
-    inset:0;
     overflow:hidden;
-    z-index:-1;
 }
-
-.wave{
-    position:absolute;
-    width:200%;
-    height:200%;
-    background:radial-gradient(circle at center,
-    rgba(0,140,255,0.25),
-    rgba(0,0,0,0));
-    animation:waveMove 8s linear infinite;
-}
-
-.wave:nth-child(2){
-    animation-duration:12s;
-    opacity:0.7;
-}
-
-.wave:nth-child(3){
-    animation-duration:16s;
-    opacity:0.4;
-}
-
-@keyframes waveMove{
-    0%{
-        transform:translate(-20%,-20%) rotate(0deg);
-    }
-    100%{
-        transform:translate(-20%,-20%) rotate(360deg);
-    }
-}
-
-/* MENU */
 
 #menu{
     position:absolute;
@@ -68,43 +22,31 @@ body{
     align-items:center;
 }
 
-.menu-box{
-    background:rgba(0,0,0,0.4);
-    backdrop-filter:blur(10px);
-    padding:40px;
-    border-radius:20px;
-    width:320px;
-    box-shadow:0 0 30px rgba(0,140,255,0.4);
-}
-
-.menu-box h1{
+.box{
+    background:rgba(0,0,0,0.5);
+    padding:30px;
+    border-radius:15px;
+    width:300px;
     text-align:center;
-    margin-bottom:20px;
 }
 
 input{
     width:100%;
-    padding:12px;
-    border:none;
-    border-radius:12px;
+    padding:10px;
     margin-top:10px;
-    font-size:16px;
+    border-radius:10px;
+    border:none;
 }
 
 button{
     width:100%;
-    padding:12px;
-    margin-top:12px;
+    margin-top:10px;
+    padding:10px;
     border:none;
-    border-radius:12px;
-    background:#008cff;
+    border-radius:10px;
+    background:#3b82f6;
     color:white;
-    font-size:17px;
     cursor:pointer;
-}
-
-button:hover{
-    opacity:0.9;
 }
 
 #game{
@@ -112,214 +54,84 @@ button:hover{
     height:100vh;
 }
 
-#topbar{
-    height:70px;
-    background:rgba(0,0,0,0.5);
-    backdrop-filter:blur(10px);
+#top{
+    height:60px;
+    background:#1f2937;
     display:flex;
-    align-items:center;
     justify-content:space-between;
-    padding:10px;
+    align-items:center;
+    padding:0 10px;
 }
 
-#role-info{
-    font-size:20px;
-    font-weight:bold;
-}
-
-#game-area{
+#main{
     display:flex;
-    height:calc(100vh - 70px);
+    height:calc(100vh - 60px);
 }
 
 #players{
-    width:220px;
-    background:rgba(0,0,0,0.35);
+    width:200px;
+    background:#111827;
+    padding:10px;
     overflow:auto;
-    padding:10px;
 }
 
-#players-list div{
-    margin-top:10px;
-    background:rgba(255,255,255,0.05);
+#chat{
+    width:250px;
+    background:#111827;
     padding:10px;
-    border-radius:10px;
+    overflow:auto;
 }
 
-#canvas-container{
+#center{
     flex:1;
     display:flex;
-    flex-direction:column;
-    align-items:center;
     justify-content:center;
+    align-items:center;
+    flex-direction:column;
 }
 
 canvas{
     background:white;
-    border-radius:15px;
-    box-shadow:0 0 20px rgba(0,0,0,0.5);
-}
-
-#chat-container{
-    width:300px;
-    background:rgba(0,0,0,0.35);
-    display:flex;
-    flex-direction:column;
-    padding:10px;
-}
-
-#chat{
-    flex:1;
-    overflow:auto;
-}
-
-.chat-msg{
-    background:rgba(255,255,255,0.08);
-    margin-top:10px;
-    padding:10px;
     border-radius:10px;
 }
 
-.system-msg{
-    background:#214b9b;
+.msg{
+    margin:5px 0;
+    padding:5px;
+    background:#1f2937;
+    border-radius:8px;
 }
-
-.correct-msg{
-    background:#1f8a3c;
-}
-
-#drawer-panel{
-    margin-top:15px;
-    width:400px;
-}
-
-.active-tool{
-    background:orange;
-}
-
-#word-display{
-    font-size:22px;
-    margin-top:10px;
-    font-weight:bold;
-}
-
 </style>
 </head>
 
 <body>
 
-<div id="animated-bg">
-    <div class="wave"></div>
-    <div class="wave"></div>
-    <div class="wave"></div>
-</div>
-
 <div id="menu">
-
-    <div class="menu-box">
-
-        <h1>🎨 Mini Gartic</h1>
-
-        <input
-            type="text"
-            id="nickname"
-            placeholder="Введите ник"
-        >
-
-        <button onclick="joinGame()">
-            Войти в игру
-        </button>
-
+    <div class="box">
+        <h2>🎨 Gartic FIX</h2>
+        <input id="nick" placeholder="Ник">
+        <button onclick="join()">Войти</button>
     </div>
-
 </div>
 
 <div id="game">
 
-    <div id="topbar">
-
-        <div>
-
-            <button id="tool-pencil"
-            onclick="setTool('pencil')"
-            class="active-tool">
-                ✏ Карандаш
-            </button>
-
-            <button id="tool-spray"
-            onclick="setTool('spray')">
-                💨 Спрей
-            </button>
-
-            <button onclick="clearCanvas()">
-                🗑 Очистить
-            </button>
-
-            <button onclick="forceStartRound()">
-                ▶ Старт
-            </button>
-
-        </div>
-
-        <div id="role-info">
-            Роль: зритель
-        </div>
-
+    <div id="top">
+        <div id="role">Загрузка...</div>
+        <button onclick="startGame()">Старт</button>
     </div>
 
-    <div id="game-area">
+    <div id="main">
 
-        <div id="players">
+        <div id="players"></div>
 
-            <h2>Игроки</h2>
-
-            <div id="players-list"></div>
-
+        <div id="center">
+            <canvas id="c" width="600" height="400"></canvas>
+            <input id="word" placeholder="Слово (для художника)" style="display:none;">
+            <button onclick="sendWord()" id="sendWordBtn" style="display:none;">OK</button>
         </div>
 
-        <div id="canvas-container">
-
-            <canvas
-                id="canvas"
-                width="800"
-                height="500">
-            </canvas>
-
-            <div id="word-display"></div>
-
-            <div id="drawer-panel"
-            style="display:none;">
-
-                <input
-                    type="text"
-                    id="secret-word-input"
-                    placeholder="Введите слово"
-                >
-
-                <button onclick="submitSecretWord()">
-                    Начать рисовать
-                </button>
-
-            </div>
-
-        </div>
-
-        <div id="chat-container">
-
-            <div id="chat"></div>
-
-            <input
-                type="text"
-                id="guess-input"
-                placeholder="Ваш ответ"
-                onkeydown="handleChatKey(event)"
-            >
-
-            <button onclick="sendGuess()">
-                Отправить
-            </button>
-
-        </div>
+        <div id="chat"></div>
 
     </div>
 
@@ -331,7 +143,6 @@ canvas{
 <script>
 
 const firebaseConfig = {
-
     apiKey: "AIzaSyCCceb4SmnsMryV7LQopTzPAhwV8yrxovU",
     authDomain: "gartic-game.firebaseapp.com",
     databaseURL: "https://gartic-game-default-rtdb.firebaseio.com",
@@ -339,83 +150,92 @@ const firebaseConfig = {
     storageBucket: "gartic-game.firebasestorage.app",
     messagingSenderId: "990895566694",
     appId: "1:990895566694:web:21b41bb6bcccc8c3e0a2a7"
-
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const db = firebase.database();
 
-let myId = '';
-let myName = '';
+let myId = null;
+let myName = "";
+let isDrawer = false;
 
-let currentRole = 'viewer';
-let currentTool = 'pencil';
+function join(){
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+    const n = document.getElementById("nick").value.trim();
+    if(!n) return alert("введи ник");
 
-let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
+    myName = n;
+    myId = db.ref("players").push().key;
 
-/* JOIN */
-
-function joinGame(){
-
-    const name =
-    document.getElementById('nickname')
-    .value.trim();
-
-    if(!name){
-        alert('Введите ник');
-        return;
-    }
-
-    myName = name;
-
-    myId = db.ref().push().key;
-
-    db.ref('players/' + myId).set({
-        id:myId,
-        name:myName,
-        score:0
+    db.ref("players/" + myId).set({
+        name: myName,
+        score: 0
     });
 
-    document.getElementById('menu')
-    .style.display = 'none';
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("game").style.display = "block";
 
-    document.getElementById('game')
-    .style.display = 'block';
-
-    setupListeners();
+    listen();
 }
 
-/* FIREBASE */
+function listen(){
 
-function setupListeners(){
-
-    db.ref('players').on('value', snap => {
-
-        const players = snap.val() || {};
-
-        updatePlayers(players);
-
+    db.ref("players").on("value", snap=>{
+        const p = snap.val() || {};
+        document.getElementById("players").innerHTML =
+            Object.values(p).map(x => `<div>${x.name} (${x.score})</div>`).join("");
     });
 
-    db.ref('chat').on('child_added', snap => {
+    db.ref("game").on("value", snap=>{
+        const g = snap.val();
+        if(!g) return;
 
-        addChatMessage(snap.val());
+        isDrawer = g.drawer === myId;
 
+        document.getElementById("role").innerText =
+            isDrawer ? "🎨 Ты рисуешь" : "👀 Ты угадываешь";
+
+        if(isDrawer){
+            document.getElementById("word").style.display = "block";
+            document.getElementById("sendWordBtn").style.display = "block";
+        } else {
+            document.getElementById("word").style.display = "none";
+            document.getElementById("sendWordBtn").style.display = "none";
+        }
     });
 
-    db.ref('canvas/lines')
-    .on('child_added', snap => {
+}
 
-        const d = snap.val();
+function startGame(){
 
-        drawLine(
-            d.x,
-            d.y,
-            d.type,
-            d.isNew
+    db.ref("players").once("value", snap=>{
+        const arr = Object.keys(snap.val() || {});
+        if(arr.length === 0) return;
+
+        const drawer = arr[Math.floor(Math.random()*arr.length)];
+
+        db.ref("game").set({
+            drawer: drawer,
+            word: "",
+            status: "setup"
+        });
+    });
+
+}
+
+function sendWord(){
+
+    const w = document.getElementById("word").value.trim().toLowerCase();
+    if(!w) return;
+
+    db.ref("game").update({
+        word: w,
+        status: "play"
+    });
+
+}
+
+</script>
+
+</body>
+</html>
