@@ -308,27 +308,41 @@ function enter(){
 let nick=document.getElementById("nick").value;
 let avatar=document.getElementById("avatar").files[0];
 
-if(!nick) return alert("Введите ник");
+if(!nick){
+alert("Введите ник");
+return;
+}
+
+if(avatar){
 
 let reader=new FileReader();
 
-reader.onload=function(){
+reader.onload=function(e){
 
 let data={
 nick:nick,
-avatar:reader.result
+avatar:e.target.result
 };
 
 localStorage.setItem("natureUser",JSON.stringify(data));
 
 start(data);
 
-}
+};
 
-if(avatar){
 reader.readAsDataURL(avatar);
+
 }else{
-reader.onload();
+
+let data={
+nick:nick,
+avatar:"https://i.imgur.com/2DhmtJ4.png"
+};
+
+localStorage.setItem("natureUser",JSON.stringify(data));
+
+start(data);
+
 }
 
 }
@@ -377,6 +391,10 @@ t.style.display="block";
 
 t.innerHTML="Подождите "+remain+" сек";
 
+setTimeout(()=>{
+t.style.display="none";
+},2000);
+
 return;
 }
 
@@ -388,18 +406,21 @@ text="📍 "+text;
 
 let file=document.getElementById("media").files[0];
 
-if(!file) return alert("Выберите фото или видео");
+if(!file){
+alert("Выберите фото или видео");
+return;
+}
 
 let reader=new FileReader();
 
-reader.onload=function(){
+reader.onload=function(e){
 
 db.ref("posts").push({
 
 nick:currentUser.nick,
 avatar:currentUser.avatar,
 text:text,
-media:reader.result,
+media:e.target.result,
 type:file.type,
 likes:0,
 time:Date.now()
@@ -417,7 +438,7 @@ reader.readAsDataURL(file);
 
 }
 
-/* LOAD */
+/* LOAD POSTS */
 function loadPosts(){
 
 db.ref("posts").on("child_added",snap=>{
@@ -431,16 +452,20 @@ div.className="post glass";
 let mediaHTML="";
 
 if(p.type.startsWith("image")){
+
 mediaHTML=`<img src="${p.media}">`;
+
 }else{
+
 mediaHTML=`<video controls src="${p.media}"></video>`;
+
 }
 
 div.innerHTML=`
 
 <div class="postTop">
 
-<img class="avatar" src="${p.avatar || 'https://i.imgur.com/2DhmtJ4.png'}">
+<img class="avatar" src="${p.avatar}">
 
 <div>
 <div class="name">${p.nick}</div>
@@ -471,10 +496,4 @@ confetti();
 
 };
 
-let followBtn=div.querySelector(".followBtn");
-
-followBtn.onclick=()=>{
-
-if(localStorage.getItem("follow_"+p.nick)) return;
-
-localStorage.setItem("follow_"+p.nick,true);
+let fol
