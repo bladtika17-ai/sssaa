@@ -3,170 +3,283 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neon Gartic Room</title>
+<title>Nature Chat 🌲</title>
 
 <style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
 body{
-    margin:0;
-    overflow:hidden;
-    font-family:Arial;
-    background:#020617;
-    color:white;
+background:#08110d;
+overflow:hidden;
+color:white;
 }
 
-/* BACKGROUND PARTICLES */
-#bg{
-    position:fixed;
-    inset:0;
-    z-index:-3;
+/* GLASS */
+.glass{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,0.1);
+box-shadow:0 8px 32px rgba(0,0,0,0.3);
 }
 
-/* GLASS TRANSITION */
-#glass{
-    position:fixed;
-    inset:0;
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(20px);
-    opacity:0;
-    pointer-events:none;
-    transition:1.2s;
-}
-#glass.active{
-    opacity:1;
+/* LOGIN */
+#login{
+position:fixed;
+inset:0;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#ff89d6,#ffb3f0);
+z-index:10;
 }
 
-/* MENU */
-#menu{
-    position:absolute;
-    inset:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+.loginBox{
+width:340px;
+padding:25px;
+border-radius:25px;
 }
 
-.box{
-    width:320px;
-    padding:25px;
-    border-radius:20px;
-    background:rgba(0,0,0,0.6);
-    backdrop-filter:blur(10px);
-    text-align:center;
+.loginBox h1{
+text-align:center;
+margin-bottom:20px;
+color:white;
 }
 
 input{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    border-radius:10px;
-    border:none;
+width:100%;
+padding:13px;
+margin-top:10px;
+border:none;
+border-radius:14px;
+outline:none;
+background:rgba(255,255,255,0.15);
+color:white;
+}
+
+input::placeholder{
+color:#eee;
 }
 
 button{
-    width:100%;
-    margin-top:10px;
-    padding:10px;
-    border-radius:10px;
-    border:none;
-    background:#2563eb;
-    color:white;
-    cursor:pointer;
+width:100%;
+padding:13px;
+margin-top:14px;
+border:none;
+border-radius:14px;
+background:#16a34a;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.2s;
 }
 
-/* GAME */
-#game{display:none;}
+button:hover{
+transform:scale(1.02);
+}
 
+/* APP */
+#app{
+display:none;
+height:100vh;
+}
+
+/* TOP */
 #top{
-    height:60px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px;
-    background:rgba(0,0,0,0.4);
+height:75px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:15px;
+border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
-#main{
-    display:flex;
-    height:calc(100vh - 60px);
+#logo{
+font-size:28px;
+font-weight:bold;
+background:linear-gradient(90deg,#00ff88,#00ffaa,#00ff88);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+animation:glow 3s infinite linear;
 }
 
-#players{
-    width:200px;
-    background:rgba(0,0,0,0.3);
-    padding:10px;
+@keyframes glow{
+0%{filter:hue-rotate(0deg)}
+100%{filter:hue-rotate(360deg)}
 }
 
-#center{
-    flex:1;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
+#changingText{
+font-size:14px;
+opacity:.8;
+animation:fade 4s infinite;
 }
 
-canvas{
-    background:white;
-    border-radius:12px;
-    cursor:crosshair;
+@keyframes fade{
+0%{opacity:0}
+20%{opacity:1}
+80%{opacity:1}
+100%{opacity:0}
 }
 
-#chat{
-    width:260px;
-    background:rgba(0,0,0,0.3);
-    padding:10px;
+/* POSTS */
+#feed{
+height:calc(100vh - 170px);
+overflow:auto;
+padding:15px;
 }
 
-/* PARTICLES */
-.dot{
-    position:absolute;
-    width:6px;
-    height:6px;
-    border-radius:50%;
-    background:radial-gradient(circle,red,orange,yellow,green,blue,purple);
-    animation:float 2s linear infinite;
+.post{
+padding:15px;
+margin-bottom:15px;
+border-radius:22px;
 }
 
-@keyframes float{
-    from{transform:translateY(0);opacity:1;}
-    to{transform:translateY(-250px);opacity:0;}
+.post img,
+.post video{
+width:100%;
+border-radius:18px;
+margin-top:10px;
 }
+
+.postTop{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.avatar{
+width:50px;
+height:50px;
+border-radius:50%;
+object-fit:cover;
+}
+
+.name{
+font-weight:bold;
+}
+
+.location{
+font-size:13px;
+opacity:0.8;
+margin-top:4px;
+}
+
+/* CHAT */
+#bottom{
+height:95px;
+padding:10px;
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+#message{
+flex:1;
+height:50px;
+}
+
+/* WELCOME */
+#welcome{
+position:fixed;
+inset:0;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:34px;
+background:rgba(255,182,255,0.2);
+backdrop-filter:blur(25px);
+z-index:50;
+opacity:0;
+pointer-events:none;
+transition:1s;
+}
+
+#welcome.show{
+opacity:1;
+}
+
+/* TIMER */
+#timer{
+position:fixed;
+top:90px;
+right:20px;
+padding:12px 18px;
+border-radius:20px;
+display:none;
+}
+
+/* FOLLOW BTN */
+.followBtn{
+background:#00cc66;
+margin-top:10px;
+}
+
+/* LIKE */
+.likeBtn{
+margin-top:10px;
+background:#ff4081;
+}
+
 </style>
 </head>
 
 <body>
 
-<canvas id="bg"></canvas>
-<div id="glass"></div>
-
-<!-- MENU -->
-<div id="menu">
-    <div class="box" id="box">
-        <h2>🌈 Neon Gartic</h2>
-        <input id="nick" placeholder="Ник">
-        <button onclick="join()">Войти</button>
-    </div>
+<div id="welcome">
+Добрый день 🌸
 </div>
 
-<!-- GAME -->
-<div id="game">
+<!-- LOGIN -->
+<div id="login">
 
-    <div id="top">
-        <div id="role">...</div>
-        <button onclick="startGame()">СТАРТ (любой)</button>
-    </div>
+<div class="loginBox glass">
 
-    <div id="main">
+<h1>Nature Chat 🌲</h1>
 
-        <div id="players"></div>
+<input id="nick" placeholder="Введите ник">
 
-        <div id="center">
-            <canvas id="c" width="650" height="420"></canvas>
-        </div>
+<input type="file" id="avatar" accept="image/*">
 
-        <div id="chat"></div>
-
-    </div>
+<button onclick="enter()">Войти</button>
 
 </div>
+
+</div>
+
+<!-- APP -->
+<div id="app">
+
+<div id="top" class="glass">
+
+<div id="logo">🌲 Nature Chat</div>
+
+<div id="changingText">
+You can post a photo in Nature
+</div>
+
+</div>
+
+<div id="feed"></div>
+
+<div id="bottom" class="glass">
+
+<input id="message" placeholder="📍 Введите локацию и сообщение">
+
+<input type="file" id="media" accept="image/*,video/*">
+
+<button onclick="createPost()">POST</button>
+
+</div>
+
+</div>
+
+<div id="timer" class="glass"></div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -186,165 +299,182 @@ appId:"1:990895566694:web:21b41bb6bcccc8c3e0a2a7"
 
 const db=firebase.database();
 
-/* ROOM SYSTEM (NEW PLAYERS ONLY) */
-const roomId = "room_" + Math.random().toString(36).substr(2,6);
+let currentUser=null;
+let lastPost=0;
 
-/* STATE */
-let myId="";
-let myName="";
+/* LOGIN */
+function enter(){
 
-/* BACKGROUND PARTICLES (RAINBOW) */
-const bg=document.getElementById("bg");
-const ctx=bg.getContext("2d");
+let nick=document.getElementById("nick").value;
+let avatar=document.getElementById("avatar").files[0];
 
-bg.width=innerWidth;
-bg.height=innerHeight;
+if(!nick) return alert("Введите ник");
 
-let dots=[];
+let reader=new FileReader();
 
-for(let i=0;i<120;i++){
-    dots.push({
-        x:Math.random()*bg.width,
-        y:Math.random()*bg.height,
-        vx:(Math.random()-0.5)*1.2,
-        vy:(Math.random()-0.5)*1.2
-    });
+reader.onload=function(){
+
+let data={
+nick:nick,
+avatar:reader.result
+};
+
+localStorage.setItem("natureUser",JSON.stringify(data));
+
+start(data);
+
 }
 
-let mouse={x:0,y:0};
+if(avatar){
+reader.readAsDataURL(avatar);
+}else{
+reader.onload();
+}
 
-document.addEventListener("mousemove",e=>{
-    mouse.x=e.clientX;
-    mouse.y=e.clientY;
+}
+
+/* AUTO LOGIN */
+let saved=localStorage.getItem("natureUser");
+
+if(saved){
+start(JSON.parse(saved));
+}
+
+/* START */
+function start(user){
+
+currentUser=user;
+
+document.getElementById("login").style.display="none";
+document.getElementById("app").style.display="block";
+
+let w=document.getElementById("welcome");
+
+w.innerHTML="Добрый день, "+user.nick+" 🌸";
+
+w.classList.add("show");
+
+setTimeout(()=>{
+w.classList.remove("show");
+},3000);
+
+loadPosts();
+
+}
+
+/* POSTS */
+function createPost(){
+
+let now=Date.now();
+
+if(now-lastPost<20000){
+
+let remain=Math.ceil((20000-(now-lastPost))/1000);
+
+let t=document.getElementById("timer");
+
+t.style.display="block";
+
+t.innerHTML="Подождите "+remain+" сек";
+
+return;
+}
+
+let text=document.getElementById("message").value;
+
+if(!text.includes("📍")){
+text="📍 "+text;
+}
+
+let file=document.getElementById("media").files[0];
+
+if(!file) return alert("Выберите фото или видео");
+
+let reader=new FileReader();
+
+reader.onload=function(){
+
+db.ref("posts").push({
+
+nick:currentUser.nick,
+avatar:currentUser.avatar,
+text:text,
+media:reader.result,
+type:file.type,
+likes:0,
+time:Date.now()
+
 });
 
-function animate(){
-    ctx.clearRect(0,0,bg.width,bg.height);
+document.getElementById("message").value="";
+document.getElementById("media").value="";
 
-    for(let d of dots){
-
-        d.x+=d.vx;
-        d.y+=d.vy;
-
-        if(d.x<0||d.x>bg.width) d.vx*=-1;
-        if(d.y<0||d.y>bg.height) d.vy*=-1;
-
-        ctx.fillStyle="hsl("+(d.x%360)+",100%,60%)";
-        ctx.beginPath();
-        ctx.arc(d.x,d.y,2,0,Math.PI*2);
-        ctx.fill();
-
-        let dx=d.x-mouse.x;
-        let dy=d.y-mouse.y;
-        let dist=Math.sqrt(dx*dx+dy*dy);
-
-        if(dist<130){
-            ctx.strokeStyle="rgba(255,255,255,0.15)";
-            ctx.beginPath();
-            ctx.moveTo(d.x,d.y);
-            ctx.lineTo(mouse.x,mouse.y);
-            ctx.stroke();
-        }
-    }
-
-    requestAnimationFrame(animate);
-}
-animate();
-
-/* JOIN PARTICLES */
-function spawnRainbow(){
-    let box=document.getElementById("box");
-
-    for(let i=0;i<25;i++){
-        let d=document.createElement("div");
-        d.className="dot";
-        d.style.left=Math.random()*300+"px";
-        d.style.top="200px";
-        box.appendChild(d);
-        setTimeout(()=>d.remove(),2000);
-    }
-}
-
-/* JOIN */
-function join(){
-
-    spawnRainbow();
-
-    document.getElementById("glass").classList.add("active");
-
-    setTimeout(()=>{
-
-        myName=document.getElementById("nick").value;
-
-        myId=db.ref("rooms/"+roomId+"/players").push().key;
-
-        db.ref("rooms/"+roomId+"/players/"+myId).set({
-            name:myName,
-            score:0
-        });
-
-        document.getElementById("menu").style.display="none";
-        document.getElementById("game").style.display="block";
-
-        listen();
-
-    },1200);
-}
-
-/* LISTEN */
-function listen(){
-
-    db.ref("rooms/"+roomId+"/players").on("value",snap=>{
-        let p=snap.val()||{};
-        document.getElementById("players").innerHTML=
-        Object.values(p).map(x=>"👤 "+x.name).join("<br>");
-    });
-
-    db.ref("rooms/"+roomId+"/chat").on("child_added",snap=>{
-        let m=snap.val();
-        document.getElementById("chat").innerHTML+=
-        `<div>${m.user}: ${m.text}</div>`;
-    });
+lastPost=Date.now();
 
 }
 
-/* START GAME (ANYONE CAN START) */
-function startGame(){
-
-    db.ref("rooms/"+roomId).set({
-        started:true,
-        word:""
-    });
-
-    db.ref("rooms/"+roomId+"/chat").push({
-        user:"SYSTEM",
-        text:"🎮 Новая игра началась"
-    });
+reader.readAsDataURL(file);
 
 }
 
-/* DRAW */
-const c=document.getElementById("c");
-const cctx=c.getContext("2d");
+/* LOAD */
+function loadPosts(){
 
-let draw=false;
+db.ref("posts").on("child_added",snap=>{
 
-c.addEventListener("mousedown",()=>draw=true);
-c.addEventListener("mouseup",()=>draw=false);
+let p=snap.val();
 
-c.addEventListener("mousemove",e=>{
-    if(!draw)return;
+let div=document.createElement("div");
 
-    let r=c.getBoundingClientRect();
+div.className="post glass";
 
-    let x=e.clientX-r.left;
-    let y=e.clientY-r.top;
+let mediaHTML="";
 
-    cctx.fillStyle="black";
-    cctx.fillRect(x,y,3,3);
-});
+if(p.type.startsWith("image")){
+mediaHTML=`<img src="${p.media}">`;
+}else{
+mediaHTML=`<video controls src="${p.media}"></video>`;
+}
 
-</script>
+div.innerHTML=`
 
-</body>
-</html>
+<div class="postTop">
+
+<img class="avatar" src="${p.avatar || 'https://i.imgur.com/2DhmtJ4.png'}">
+
+<div>
+<div class="name">${p.nick}</div>
+<div class="location">${p.text}</div>
+</div>
+
+</div>
+
+${mediaHTML}
+
+<button class="likeBtn">❤️ Like</button>
+
+<button class="followBtn">➕ Follow</button>
+
+`;
+
+let likeBtn=div.querySelector(".likeBtn");
+
+likeBtn.onclick=()=>{
+
+if(localStorage.getItem("liked_"+snap.key)) return;
+
+localStorage.setItem("liked_"+snap.key,true);
+
+likeBtn.innerHTML="💖 Liked";
+
+confetti();
+
+};
+
+let followBtn=div.querySelector(".followBtn");
+
+followBtn.onclick=()=>{
+
+if(localStorage.getItem("follow_"+p.nick)) return;
+
+localStorage.setItem("follow_"+p.nick,true);
