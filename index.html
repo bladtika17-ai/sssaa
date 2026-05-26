@@ -6,7 +6,6 @@
 <title>Nature Chat 🌲</title>
 
 <style>
-
 *{
 margin:0;
 padding:0;
@@ -15,17 +14,10 @@ font-family:Arial;
 }
 
 body{
+height:100vh;
 overflow:hidden;
 color:white;
-height:100vh;
-
-/* 🌲 ЗЕЛЁНЫЙ ФОН */
-background:
-linear-gradient(to top,
-#14532d 0%,
-#166534 25%,
-#15803d 45%,
-#052e16 100%);
+background:linear-gradient(to top,#052e16,#166534,#14532d);
 }
 
 /* ТРАВА */
@@ -36,7 +28,6 @@ bottom:0;
 left:0;
 width:100%;
 height:180px;
-
 background:
 radial-gradient(circle at 10% 100%, #22c55e 0 30px, transparent 31px),
 radial-gradient(circle at 20% 100%, #16a34a 0 35px, transparent 36px),
@@ -47,18 +38,8 @@ radial-gradient(circle at 60% 100%, #16a34a 0 36px, transparent 37px),
 radial-gradient(circle at 70% 100%, #22c55e 0 30px, transparent 31px),
 radial-gradient(circle at 80% 100%, #15803d 0 42px, transparent 43px),
 radial-gradient(circle at 90% 100%, #22c55e 0 35px, transparent 36px);
-
-opacity:0.7;
+opacity:.7;
 pointer-events:none;
-}
-
-/* GLASS */
-.glass{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(20px);
--webkit-backdrop-filter:blur(20px);
-border:1px solid rgba(255,255,255,0.1);
-box-shadow:0 8px 32px rgba(0,0,0,0.3);
 }
 
 /* LOGIN */
@@ -70,61 +51,33 @@ justify-content:center;
 align-items:center;
 }
 
-.loginBox{
+.box{
 width:340px;
-padding:25px;
-border-radius:30px;
+padding:20px;
+border-radius:20px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(20px);
 }
 
-/* TITLE */
 .title{
-font-size:38px;
+font-size:32px;
 text-align:center;
-margin-bottom:20px;
-font-weight:bold;
-
-background:linear-gradient(90deg,#00ff88,#00ffaa,#00ff88);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-
-animation:glow 3s linear infinite;
+margin-bottom:15px;
+color:#00ff88;
 }
 
-@keyframes glow{
-0%{filter:hue-rotate(0deg)}
-100%{filter:hue-rotate(360deg)}
-}
-
-input{
+input,button{
 width:100%;
-padding:14px;
+padding:12px;
 margin-top:10px;
 border:none;
-border-radius:16px;
-background:rgba(255,255,255,0.12);
-color:white;
-outline:none;
-}
-
-input::placeholder{
-color:#ddd;
+border-radius:12px;
 }
 
 button{
-width:100%;
-padding:14px;
-margin-top:14px;
-border:none;
-border-radius:16px;
 background:#22c55e;
 color:white;
-font-size:16px;
 cursor:pointer;
-transition:.2s;
-}
-
-button:hover{
-transform:scale(1.03);
 }
 
 /* APP */
@@ -133,153 +86,93 @@ display:none;
 height:100vh;
 }
 
-/* TOP */
 #top{
-height:80px;
+height:70px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:15px;
-border-bottom:1px solid rgba(255,255,255,0.1);
+padding:10px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(10px);
 }
 
 #logo{
-font-size:28px;
+font-size:20px;
 font-weight:bold;
-background:linear-gradient(90deg,#00ff88,#00ffaa);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+color:#00ff88;
 }
 
-#changingText{
-font-size:14px;
-opacity:.9;
-}
-
-/* FEED */
 #feed{
-height:calc(100vh - 170px);
+height:calc(100vh - 150px);
 overflow:auto;
-padding:15px;
+padding:10px;
 }
 
-/* POST */
 .post{
-padding:15px;
-border-radius:24px;
-margin-bottom:15px;
+background:rgba(255,255,255,0.06);
+padding:10px;
+border-radius:15px;
+margin-bottom:10px;
 }
 
-.post img,
-.post video{
+.post img,.post video{
 width:100%;
-border-radius:20px;
+border-radius:10px;
 margin-top:10px;
 }
 
-.postTop{
+.avatar{
+width:40px;
+height:40px;
+border-radius:50%;
+}
+
+.topPost{
 display:flex;
 gap:10px;
 align-items:center;
 }
 
-.avatar{
-width:50px;
-height:50px;
-border-radius:50%;
-object-fit:cover;
-}
-
-.name{
-font-weight:bold;
-}
-
-.location{
-font-size:13px;
-opacity:.8;
-}
-
-/* BOTTOM */
 #bottom{
-height:90px;
 display:flex;
 gap:10px;
 padding:10px;
 }
 
-#message{
+#bottom input{
 flex:1;
 }
-
-/* WELCOME */
-#welcome{
-position:fixed;
-inset:0;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:35px;
-backdrop-filter:blur(25px);
-background:rgba(0,255,120,0.15);
-opacity:0;
-pointer-events:none;
-transition:1s;
-z-index:50;
-}
-
-#welcome.show{
-opacity:1;
-}
-
 </style>
 </head>
 
 <body>
 
-<div id="welcome">
-Добрый день 🌸
-</div>
-
 <!-- LOGIN -->
 <div id="login">
-
-<div class="loginBox glass">
-
+<div class="box">
 <div class="title">🌲 Nature Chat</div>
 
-<input id="nick" placeholder="Введите ник">
+<input id="nick" placeholder="Ник">
+<input type="file" id="avatar">
 
-<input type="file" id="avatar" accept="image/*">
-
-<button onclick="enter()">Войти</button>
-
+<button id="loginBtn">Войти</button>
 </div>
-
 </div>
 
 <!-- APP -->
 <div id="app">
 
-<div id="top" class="glass">
-
+<div id="top">
 <div id="logo">🌲 Nature Chat</div>
-
-<div id="changingText">
-You can post a photo in Nature 🌿
-</div>
-
+<div id="status">online</div>
 </div>
 
 <div id="feed"></div>
 
-<div id="bottom" class="glass">
-
-<input id="message" placeholder="📍 Локация и сообщение">
-
-<input type="file" id="media" accept="image/*,video/*">
-
-<button onclick="createPost()">POST</button>
-
+<div id="bottom">
+<input id="msg" placeholder="Описание + место">
+<input type="file" id="file">
+<button id="postBtn">POST</button>
 </div>
 
 </div>
@@ -289,187 +182,158 @@ You can post a photo in Nature 🌿
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
-
-/* FIREBASE */
 firebase.initializeApp({
 apiKey:"AIzaSyCCceb4SmnsMryV7LQopTzPAhwV8yrxovU",
 authDomain:"gartic-game.firebaseapp.com",
 databaseURL:"https://gartic-game-default-rtdb.firebaseio.com",
 projectId:"gartic-game",
-storageBucket:"gartic-game.firebasestorage.app",
+storageBucket:"gartic-game.appspot.com",
 messagingSenderId:"990895566694",
 appId:"1:990895566694:web:21b41bb6bcccc8c3e0a2a7"
 });
 
 const db = firebase.database();
 
-let currentUser=null;
+let currentUser = null;
 
-/* ENTER */
-function enter(){
+/* LOGIN */
+document.getElementById("loginBtn").onclick = () => {
 
-let nick=document.getElementById("nick").value.trim();
+let nick = document.getElementById("nick").value;
+if(!nick) return alert("Введи ник");
 
-if(!nick){
-alert("Введите ник");
-return;
+let file = document.getElementById("avatar").files[0];
+
+if(file){
+let r = new FileReader();
+r.onload = e => {
+saveUser({nick, avatar:e.target.result});
+};
+r.readAsDataURL(file);
+}else{
+saveUser({nick, avatar:"https://i.imgur.com/2DhmtJ4.png"});
 }
-
-let avatarFile=document.getElementById("avatar").files[0];
-
-if(avatarFile){
-
-let reader=new FileReader();
-
-reader.onload=function(e){
-
-saveUser({
-nick:nick,
-avatar:e.target.result
-});
 
 };
 
-reader.readAsDataURL(avatarFile);
-
-}else{
-
-saveUser({
-nick:nick,
-avatar:"https://i.imgur.com/2DhmtJ4.png"
-});
-
-}
-
-}
-
-/* SAVE USER */
 function saveUser(user){
-
-localStorage.setItem(
-"natureUser",
-JSON.stringify(user)
-);
-
+localStorage.setItem("user", JSON.stringify(user));
 start(user);
-
-}
-
-/* AUTO LOGIN */
-let saved=localStorage.getItem("natureUser");
-
-if(saved){
-
-start(JSON.parse(saved));
-
 }
 
 /* START */
 function start(user){
 
-currentUser=user;
+currentUser = user;
 
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
 
-let welcome=document.getElementById("welcome");
+/* GEO */
+navigator.geolocation.getCurrentPosition(pos=>{
+currentUser.lat = pos.coords.latitude;
+currentUser.lng = pos.coords.longitude;
 
-welcome.innerHTML=
-"Добрый день, "+user.nick+" 🌸";
+db.ref("users/"+currentUser.nick).set({
+...currentUser,
+online:true,
+last:Date.now()
+});
+});
 
-welcome.classList.add("show");
+/* ONLINE PING */
+setInterval(()=>{
+if(!currentUser) return;
 
-setTimeout(()=>{
-welcome.classList.remove("show");
-},3000);
+db.ref("users/"+currentUser.nick).update({
+online:true,
+last:Date.now()
+});
+
+},5000);
 
 loadPosts();
 
 }
 
-/* CREATE POST */
-function createPost(){
+/* POST */
+document.getElementById("postBtn").onclick = () => {
 
-let message=
-document.getElementById("message").value;
+let msg = document.getElementById("msg").value;
+let file = document.getElementById("file").files[0];
 
-let file=
-document.getElementById("media").files[0];
+if(!file) return alert("Добавь фото/видео");
 
-if(!file){
-alert("Выберите фото или видео");
-return;
-}
+let r = new FileReader();
 
-let reader=new FileReader();
+r.onload = e => {
 
-reader.onload=function(e){
+let id = db.ref("posts").push().key;
 
-db.ref("posts").push({
-
+db.ref("posts/"+id).set({
+id,
 nick:currentUser.nick,
 avatar:currentUser.avatar,
-message:message,
+message:msg,
 media:e.target.result,
-type:file.type
-
+type:file.type,
+likes:0,
+lat:currentUser.lat||null,
+lng:currentUser.lng||null,
+time:Date.now()
 });
 
 };
 
-reader.readAsDataURL(file);
+r.readAsDataURL(file);
 
+};
+
+/* LIKE */
+function like(id){
+db.ref("posts/"+id+"/likes").transaction(l=> (l||0)+1);
 }
+window.like = like;
 
-/* LOAD POSTS */
+/* LOAD */
 function loadPosts(){
 
 db.ref("posts").on("child_added",snap=>{
 
-let p=snap.val();
+let p = snap.val();
 
-let div=document.createElement("div");
+let el = document.createElement("div");
+el.className="post";
 
-div.className="post glass";
+let media = p.type.startsWith("image")
+? `<img src="${p.media}">`
+: `<video controls src="${p.media}"></video>`;
 
-let media="";
-
-if(p.type.startsWith("image")){
-
-media=`<img src="${p.media}">`;
-
-}else{
-
-media=`<video controls src="${p.media}"></video>`;
-
-}
-
-div.innerHTML=`
-
-<div class="postTop">
-
+el.innerHTML = `
+<div class="topPost">
 <img class="avatar" src="${p.avatar}">
-
 <div>
-<div class="name">${p.nick}</div>
-<div class="location">${p.message}</div>
+<b>${p.nick}</b><br>
+<small>${p.message}</small>
 </div>
-
 </div>
 
 ${media}
 
+<button onclick="like('${p.id}')">❤️ ${p.likes||0}</button>
 `;
 
-document.getElementById("feed")
-.prepend(div);
+document.getElementById("feed").prepend(el);
 
 });
 
 }
 
-/* TEXT LOOP */
-let texts=[
-"You can post a photo in Nature 🌿",
-"Upload videos and photos ✨",
-"Nature community o
+/* AUTO LOGIN */
+let saved = localStorage.getItem("user");
+if(saved) start(JSON.parse(saved));
+
+</script>
+
+</body>
+</html>
