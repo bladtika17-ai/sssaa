@@ -2,145 +2,114 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nature Chat 🌲</title>
+<title>MyOS 6.5 FULL</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
-}
-
-body{
-height:100vh;
-overflow:hidden;
-color:white;
-background:linear-gradient(to top,#052e16,#166534,#14532d);
-}
-
-/* ТРАВА */
-body::before{
-content:"";
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-height:180px;
-background:
-radial-gradient(circle at 10% 100%, #22c55e 0 30px, transparent 31px),
-radial-gradient(circle at 20% 100%, #16a34a 0 35px, transparent 36px),
-radial-gradient(circle at 30% 100%, #22c55e 0 28px, transparent 29px),
-radial-gradient(circle at 40% 100%, #15803d 0 40px, transparent 41px),
-radial-gradient(circle at 50% 100%, #22c55e 0 32px, transparent 33px),
-radial-gradient(circle at 60% 100%, #16a34a 0 36px, transparent 37px),
-radial-gradient(circle at 70% 100%, #22c55e 0 30px, transparent 31px),
-radial-gradient(circle at 80% 100%, #15803d 0 42px, transparent 43px),
-radial-gradient(circle at 90% 100%, #22c55e 0 35px, transparent 36px);
-opacity:.7;
-pointer-events:none;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI;user-select:none;}
+body{overflow:hidden;background:black;}
 
 /* LOGIN */
 #login{
-position:fixed;
-inset:0;
+position:absolute;width:100vw;height:100vh;
+background:#0a0a0a;color:white;
+display:flex;flex-direction:column;
+justify-content:center;align-items:center;
+}
+
+/* DESKTOP */
+#desktop{
+display:none;
+width:100vw;height:100vh;
+position:relative;
+overflow:hidden;
+}
+
+#bgVideo{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-2;
+}
+
+/* TASKBAR */
+#taskbar{
+position:absolute;
+bottom:0;
+width:100%;
+height:55px;
+background:rgba(20,20,20,.6);
+backdrop-filter:blur(20px);
+display:flex;
+align-items:center;
+padding:0 10px;
+}
+
+.task-btn{
+width:40px;height:40px;
+margin:5px;
+border-radius:10px;
+background:rgba(255,255,255,.1);
 display:flex;
 justify-content:center;
 align-items:center;
-}
-
-.box{
-width:340px;
-padding:20px;
-border-radius:20px;
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(20px);
-}
-
-.title{
-font-size:32px;
-text-align:center;
-margin-bottom:15px;
-color:#00ff88;
-}
-
-input,button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:12px;
-}
-
-button{
-background:#22c55e;
-color:white;
 cursor:pointer;
 }
 
-/* APP */
-#app{
+#clock{margin-left:auto;color:white;padding-right:10px;}
+
+/* START */
+#start{
+position:absolute;
+bottom:65px;
+left:10px;
+width:300px;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(20px);
+border-radius:15px;
 display:none;
-height:100vh;
+padding:10px;
+color:white;
 }
 
-#top{
-height:70px;
+.app{
+padding:10px;
+border-radius:10px;
+cursor:pointer;
+}
+.app:hover{background:rgba(255,255,255,.15);}
+
+/* WINDOWS */
+.window{
+position:absolute;
+width:420px;
+height:300px;
+background:rgba(255,255,255,.9);
+backdrop-filter:blur(20px);
+border-radius:15px;
+box-shadow:0 20px 50px rgba(0,0,0,.5);
+display:none;
+overflow:hidden;
+}
+
+.titlebar{
+background:#1e1e1e;
+color:white;
+padding:8px;
 display:flex;
 justify-content:space-between;
-align-items:center;
-padding:10px;
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(10px);
+cursor:move;
 }
 
-#logo{
-font-size:20px;
-font-weight:bold;
-color:#00ff88;
-}
+textarea{width:100%;height:240px}
 
-#feed{
-height:calc(100vh - 150px);
-overflow:auto;
-padding:10px;
-}
+/* FILES */
+ul{padding:10px}
 
-.post{
-background:rgba(255,255,255,0.06);
-padding:10px;
-border-radius:15px;
-margin-bottom:10px;
-}
-
-.post img,.post video{
-width:100%;
-border-radius:10px;
-margin-top:10px;
-}
-
-.avatar{
-width:40px;
-height:40px;
-border-radius:50%;
-}
-
-.topPost{
-display:flex;
-gap:10px;
-align-items:center;
-}
-
-#bottom{
-display:flex;
-gap:10px;
-padding:10px;
-}
-
-#bottom input{
-flex:1;
+/* INPUT */
+input,button{
+padding:6px;
+margin:2px;
 }
 </style>
 </head>
@@ -149,189 +118,181 @@ flex:1;
 
 <!-- LOGIN -->
 <div id="login">
-<div class="box">
-<div class="title">🌲 Nature Chat</div>
-
-<input id="nick" placeholder="Ник">
-<input type="file" id="avatar">
-
-<button id="loginBtn">Войтrи</button>
-</div>
+<h1>MyOS 6.5</h1>
+<button onclick="login()">Enter</button>
 </div>
 
-<!-- APP -->
-<div id="app">
+<!-- DESKTOP -->
+<div id="desktop">
 
-<div id="top">
-<div id="logo">🌲 Nature Chat</div>
-<div id="status">online</div>
+<video id="bgVideo" autoplay loop muted></video>
+
+<!-- TASKBAR -->
+<div id="taskbar">
+<div class="task-btn" onclick="toggleStart()">🏠</div>
+<div id="clock"></div>
 </div>
 
-<div id="feed"></div>
+<!-- START -->
+<div id="start">
+<input id="search" oninput="searchApps()" placeholder="Search..." style="width:100%">
 
-<div id="bottom">
-<input id="msg" placeholder="Описание + место">
-<input type="file" id="file">
-<button id="postBtn">POST</button>
+<div class="app" onclick="openApp('browser')">🌐 Browser</div>
+<div class="app" onclick="openApp('notepad')">📄 Notepad</div>
+<div class="app" onclick="openApp('calc')">🧮 Calculator</div>
+<div class="app" onclick="openApp('files')">📁 Files</div>
+<div class="app" onclick="openApp('gallery')">🖼 Gallery</div>
+<div class="app" onclick="openApp('settings')">⚙ Settings</div>
+</div>
+
+<!-- BROWSER -->
+<div class="window" id="browser">
+<div class="titlebar" onmousedown="drag(event,'browser')">
+Browser <button onclick="closeApp('browser')">X</button>
+</div>
+<input id="url" style="width:100%">
+<button onclick="go()">Go</button>
+<iframe id="frame" style="width:100%;height:240px"></iframe>
+</div>
+
+<!-- NOTEPAD -->
+<div class="window" id="notepad">
+<div class="titlebar" onmousedown="drag(event,'notepad')">
+Notepad <button onclick="closeApp('notepad')">X</button>
+</div>
+<textarea id="note" oninput="save()"></textarea>
+</div>
+
+<!-- CALC -->
+<div class="window" id="calc">
+<div class="titlebar" onmousedown="drag(event,'calc')">
+Calc <button onclick="closeApp('calc')">X</button>
+</div>
+<input id="c">
+<button onclick="add('+')">+</button>
+<button onclick="add('-')">-</button>
+<button onclick="res()">=</button>
+</div>
+
+<!-- FILES -->
+<div class="window" id="files">
+<div class="titlebar" onmousedown="drag(event,'files')">
+Files <button onclick="closeApp('files')">X</button>
+</div>
+<input id="fname">
+<button onclick="addFile()">Create</button>
+<ul id="list"></ul>
+</div>
+
+<!-- GALLERY -->
+<div class="window" id="gallery">
+<div class="titlebar" onmousedown="drag(event,'gallery')">
+Gallery <button onclick="closeApp('gallery')">X</button>
+</div>
+<input type="file" multiple onchange="wall(this)">
+<div id="gal"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="window" id="settings">
+<div class="titlebar" onmousedown="drag(event,'settings')">
+Settings <button onclick="closeApp('settings')">X</button>
+</div>
+<input type="file" accept="image/*,video/*" onchange="wall(this)">
 </div>
 
 </div>
-
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
-firebase.initializeApp({
-apiKey:"AIzaSyCCceb4SmnsMryV7LQopTzPAhwV8yrxovU",
-authDomain:"gartic-game.firebaseapp.com",
-databaseURL:"https://gartic-game-default-rtdb.firebaseio.com",
-projectId:"gartic-game",
-storageBucket:"gartic-game.appspot.com",
-messagingSenderId:"990895566694",
-appId:"1:990895566694:web:21b41bb6bcccc8c3e0a2a7"
-});
-
-const db = firebase.database();
-
-let currentUser = null;
 
 /* LOGIN */
-document.getElementById("loginBtn").onclick = () => {
-
-let nick = document.getElementById("nick").value;
-if(!nick) return alert("Введи ник");
-
-let file = document.getElementById("avatar").files[0];
-
-if(file){
-let r = new FileReader();
-r.onload = e => {
-saveUser({nick, avatar:e.target.result});
-};
-r.readAsDataURL(file);
-}else{
-saveUser({nick, avatar:"https://i.imgur.com/2DhmtJ4.png"});
+function login(){
+document.getElementById("login").style.display="none";
+document.getElementById("desktop").style.display="block";
 }
 
-};
-
-function saveUser(user){
-localStorage.setItem("user", JSON.stringify(user));
-start(user);
-}
+/* CLOCK */
+setInterval(()=>{
+document.getElementById("clock").innerText=new Date().toLocaleTimeString();
+},1000);
 
 /* START */
-function start(user){
-
-currentUser = user;
-
-document.getElementById("login").style.display="none";
-document.getElementById("app").style.display="block";
-
-/* GEO */
-navigator.geolocation.getCurrentPosition(pos=>{
-currentUser.lat = pos.coords.latitude;
-currentUser.lng = pos.coords.longitude;
-
-db.ref("users/"+currentUser.nick).set({
-...currentUser,
-online:true,
-last:Date.now()
-});
-});
-
-/* ONLINE PING */
-setInterval(()=>{
-if(!currentUser) return;
-
-db.ref("users/"+currentUser.nick).update({
-online:true,
-last:Date.now()
-});
-
-},5000);
-
-loadPosts();
-
+function toggleStart(){
+let s=document.getElementById("start");
+s.style.display=s.style.display==="block"?"none":"block";
 }
 
-/* POST */
-document.getElementById("postBtn").onclick = () => {
+/* APPS */
+function openApp(id){document.getElementById(id).style.display="block";}
+function closeApp(id){document.getElementById(id).style.display="none";}
 
-let msg = document.getElementById("msg").value;
-let file = document.getElementById("file").files[0];
+/* DRAG */
+function drag(e,id){
+let w=document.getElementById(id);
+let ox=e.clientX-w.offsetLeft;
+let oy=e.clientY-w.offsetTop;
 
-if(!file) return alert("Добавь фото/видео");
-
-let r = new FileReader();
-
-r.onload = e => {
-
-let id = db.ref("posts").push().key;
-
-db.ref("posts/"+id).set({
-id,
-nick:currentUser.nick,
-avatar:currentUser.avatar,
-message:msg,
-media:e.target.result,
-type:file.type,
-likes:0,
-lat:currentUser.lat||null,
-lng:currentUser.lng||null,
-time:Date.now()
-});
-
+document.onmousemove=(e)=>{
+w.style.left=(e.clientX-ox)+"px";
+w.style.top=(e.clientY-oy)+"px";
 };
-
-r.readAsDataURL(file);
-
-};
-
-/* LIKE */
-function like(id){
-db.ref("posts/"+id+"/likes").transaction(l=> (l||0)+1);
+document.onmouseup=()=>document.onmousemove=null;
 }
-window.like = like;
 
-/* LOAD */
-function loadPosts(){
+/* BROWSER */
+function go(){
+let u=document.getElementById("url").value;
+if(!u.startsWith("http"))u="https://"+u;
+document.getElementById("frame").src=u;
+}
 
-db.ref("posts").on("child_added",snap=>{
+/* NOTEPAD */
+function save(){
+localStorage.setItem("n",document.getElementById("note").value);
+}
+window.onload=()=>{
+document.getElementById("note").value=localStorage.getItem("n")||"";
+loadFiles();
+}
 
-let p = snap.val();
+/* CALC */
+let v="";
+function add(x){v+=x;document.getElementById("c").value=v;}
+function res(){v=eval(v);document.getElementById("c").value=v;}
 
-let el = document.createElement("div");
-el.className="post";
-
-let media = p.type.startsWith("image")
-? `<img src="${p.media}">`
-: `<video controls src="${p.media}"></video>`;
-
-el.innerHTML = `
-<div class="topPost">
-<img class="avatar" src="${p.avatar}">
-<div>
-<b>${p.nick}</b><br>
-<small>${p.message}</small>
-</div>
-</div>
-
-${media}
-
-<button onclick="like('${p.id}')">❤️ ${p.likes||0}</button>
-`;
-
-document.getElementById("feed").prepend(el);
-
+/* FILES */
+let f=[];
+function addFile(){
+f.push(document.getElementById("fname").value);
+render();
+}
+function render(){
+let l=document.getElementById("list");
+l.innerHTML="";
+f.forEach((x,i)=>{
+l.innerHTML+=`<li>${x} <button onclick="f.splice(${i},1);render()">del</button></li>`;
 });
-
 }
 
-/* AUTO LOGIN */
-let saved = localStorage.getItem("user");
-if(saved) start(JSON.parse(saved));
+/* WALLPAPER */
+function wall(e){
+let file=e.files[0];
+let url=URL.createObjectURL(file);
+
+if(file.type.startsWith("video")){
+document.getElementById("bgVideo").src=url;
+}else{
+document.body.style.backgroundImage=`url(${url})`;
+}
+}
+
+/* SEARCH */
+function searchApps(){
+let q=document.getElementById("search").value.toLowerCase();
+document.querySelectorAll(".app").forEach(a=>{
+a.style.display=a.innerText.toLowerCase().includes(q)?"block":"none";
+});
+}
 
 </script>
 
